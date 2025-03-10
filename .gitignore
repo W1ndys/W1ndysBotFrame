@@ -1,0 +1,16 @@
+# Python临时文件
+__pycache__/
+*.py[cod]
+*$py.class
+logs
+.vscode
+node_modules/
+venv/
+.DS_Store
+**.env
+
+app/data/BilibiliPush/qrcode_key.txt
+app/data/BilibiliPush/sessdata.txt
+
+app/data/QFNUClassRegistrationCheck/token.txt
+app/backup_scripts.tar.gz

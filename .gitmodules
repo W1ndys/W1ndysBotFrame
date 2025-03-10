@@ -1,0 +1,147 @@
+[submodule "app/scripts/GroupManager"]
+	path = app/scripts/GroupManager
+	url = git@github.com:W1ndysBot/GroupManager.git
+	branch = main
+[submodule "Crypto"]
+	path = app/scripts/Crypto
+	url = git@github.com:W1ndysBot/Crypto.git
+	branch = main
+[submodule "app/scripts/Crypto"]
+	path = app/scripts/Crypto
+	url = git@github.com:W1ndysBot/Crypto.git
+	branch = main
+[submodule "app/scripts/QASystem"]
+	path = app/scripts/QASystem
+	url = git@github.com:W1ndysBot/QASystem
+	branch = main
+[submodule "app/scripts/BlacklistSystem"]
+	path = app/scripts/BlacklistSystem
+	url = git@github.com:W1ndysBot/BlacklistSystem
+	branch = main
+[submodule "app/scripts/Example"]
+	path = app/scripts/Example
+	url = git@github.com:W1ndysBot/Example
+	branch = main
+[submodule "app/scripts/InviteChain"]
+	path = app/scripts/InviteChain
+	url = git@github.com:W1ndysBot/InviteChain
+	branch = main
+[submodule "app/scripts/SoftBan"]
+	path = app/scripts/SoftBan
+	url = git@github.com:W1ndysBot/SoftBan.git
+	branch = main
+[submodule "app/scripts/QFNUTracker"]
+	path = app/scripts/QFNUTracker
+	url = git@github.com:W1ndysBot/QFNUTracker
+	branch = main
+[submodule "app/scripts/Custom"]
+	path = app/scripts/Custom
+	url = git@github.com:W1ndysBot/Custom
+	branch = main
+[submodule "app/scripts/LockGroupCard"]
+	path = app/scripts/LockGroupCard
+	url = git@github.com:W1ndysBot/LockGroupCard.git
+	branch = main
+[submodule "app/scripts/SendAll"]
+	path = app/scripts/SendAll
+	url = git@github.com:W1ndysBot/SendAll.git
+	branch = main
+[submodule "app/scripts/KeywordsReply"]
+	path = app/scripts/KeywordsReply
+	url = git@github.com:W1ndysBot/KeywordsReply.git
+	branch = main
+[submodule "app/scripts/GoToEat"]
+	path = app/scripts/GoToEat
+	url = git@github.com:W1ndysBot/GoToEat.git
+	branch = main
+[submodule "app/scripts/ImageGenerate"]
+	path = app/scripts/ImageGenerate
+	url = git@github.com:W1ndysBot/ImageGenerate
+	branch = main
+[submodule "app/scripts/ClassTable"]
+	path = app/scripts/ClassTable
+	url = git@github.com:W1ndysBot/ClassTable.git
+	branch = main
+[submodule "app/scripts/NoAddOne"]
+	path = app/scripts/NoAddOne
+	url = git@github.com:W1ndysBot/NoAddOne.git
+	branch = main
+[submodule "app/scripts/KuaKuaAI"]
+	path = app/scripts/KuaKuaAI
+	url = git@github.com:W1ndysBot/KuaKuaAI.git
+	branch = main
+[submodule "app/scripts/PokePal"]
+	path = app/scripts/PokePal
+	url = git@github.com:W1ndysBot/PokePal.git
+	branch = main
+[submodule "app/scripts/TimeAwareGreetings"]
+	path = app/scripts/TimeAwareGreetings
+	url = git@github.com:W1ndysBot/TimeAwareGreetings.git
+	branch = main
+[submodule "app/scripts/BanWords2"]
+	path = app/scripts/BanWords2
+	url = git@github.com:W1ndysBot/BanWords2.git
+[submodule "app/scripts/CET4"]
+	path = app/scripts/CET4
+	url = git@github.com:W1ndysBot/CET4.git
+	branch = main
+[submodule "app/scripts/QFNUBustExamClassroomFind"]
+	path = app/scripts/QFNUBustExamClassroomFind
+	url = git@github.com:W1ndysBot/QFNUBustExamClassroomFind
+	branch = main
+[submodule "app/scripts/GetIPInfo"]
+	path = app/scripts/GetIPInfo
+	url = git@github.com:W1ndysBot/GetIPInfo.git
+	branch = main
+[submodule "app/scripts/QFNUClassRegistrationCheck"]
+	path = app/scripts/QFNUClassRegistrationCheck
+	url = git@github.com:W1ndysBot/QFNUClassRegistrationCheck.git
+	branch = main
+[submodule "app/scripts/BilibiliAnalysis"]
+	path = app/scripts/BilibiliAnalysis
+	url = git@github.com:W1ndysBot/BilibiliAnalysis
+	branch = main
+[submodule "app/scripts/BilibiliPush"]
+	path = app/scripts/BilibiliPush
+	url = git@github.com:W1ndysBot/BilibiliPush
+	branch = main
+[submodule "app/scripts/GroupLink"]
+	path = app/scripts/GroupLink
+	url = git@github.com:W1ndysBot/GroupLink.git
+	branch = main
+[submodule "app/scripts/QRCodeInspector"]
+	path = app/scripts/QRCodeInspector
+	url = git@github.com:W1ndysBot/QRCodeInspector.git
+	branch = main
+[submodule "app/scripts/WelcomeFarewell"]
+	path = app/scripts/WelcomeFarewell
+	url = git@github.com:W1ndysBot/WelcomeFarewell.git
+	branch = main
+[submodule "app/scripts/TitleSelfService"]
+	path = app/scripts/TitleSelfService
+	url = git@github.com:W1ndysBot/TitleSelfService.git
+	branch = main
+[submodule "app/scripts/MuteWheel"]
+	path = app/scripts/MuteWheel
+	url = git@github.com:W1ndysBot/MuteWheel.git
+	branch = main
+[submodule "app/scripts/GithubCard"]
+	path = app/scripts/GithubCard
+	url = git@github.com:W1ndysBot/GithubCard.git
+	branch = main
+[submodule "app/scripts/QFNUGetFreeClassrooms"]
+	path = app/scripts/QFNUGetFreeClassrooms
+	url = git@github.com:W1ndysBot/QFNUGetFreeClassrooms.git
+	branch = main
+[submodule "app/scripts/LLM"]
+	path = app/scripts/LLM
+	url = git@github.com:W1ndysBot/LLM.git
+	branch = main
+[submodule "app/scripts/MoodDetector"]
+	path = app/scripts/MoodDetector
+	url = git@github.com:W1ndysBot/MoodDetector.git
+	branch = main
+[submodule "app/scripts/QFNUEatWhat"]
+	path = app/scripts/QFNUEatWhat
+	url = git@github.com:W1ndysBot/QFNUEatWhat.git
+	branch = main
