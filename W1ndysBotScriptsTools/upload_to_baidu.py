@@ -1,7 +1,12 @@
 import os
 import subprocess
-import sys
 import time
+import hmac
+import hashlib
+import base64
+import urllib.parse
+import requests
+import json
 
 
 def check_command_exists(command):
@@ -143,10 +148,52 @@ def upload_file_to_baidu(local_file_path, remote_path="/"):
         return f"上传失败：{e.stderr}"
 
 
+dingtalk_token = "0c0ad4540eed1d1eab06d7229a573146430e6a8b5429eb4e3ada81e039987f6c"
+
+dingtalk_secret = "SEC1000ac85e635258597301a211cde38a94644e10f473b110af6f2463e6008e441"
+
+
+def dingtalk(text, desp):
+    """发送钉钉通知"""
+    DD_BOT_TOKEN = dingtalk_token
+    DD_BOT_SECRET = dingtalk_secret
+
+    url = f"https://oapi.dingtalk.com/robot/send?access_token={DD_BOT_TOKEN}"
+    headers = {"Content-Type": "application/json"}
+    payload = {"msgtype": "text", "text": {"content": f"{text}\n{desp}"}}
+
+    if DD_BOT_TOKEN and DD_BOT_SECRET:
+        timestamp = str(round(time.time() * 1000))
+        secret_enc = DD_BOT_SECRET.encode("utf-8")
+        string_to_sign = f"{timestamp}\n{DD_BOT_SECRET}"
+        string_to_sign_enc = string_to_sign.encode("utf-8")
+        hmac_code = hmac.new(
+            secret_enc, string_to_sign_enc, digestmod=hashlib.sha256
+        ).digest()
+        sign = urllib.parse.quote_plus(
+            base64.b64encode(hmac_code).decode("utf-8").strip()
+        )
+        url = f"{url}&timestamp={timestamp}&sign={sign}"
+
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+
+    try:
+        data = response.json()
+        if response.status_code == 200 and data.get("errcode") == 0:
+            print("钉钉发送通知消息成功🎉")
+        else:
+            print(f"钉钉发送通知消息失败😞\n{data.get('errmsg')}")
+    except Exception as e:
+        print(f"钉钉发送通知消息失败😞\n{e}")
+
+    return response.json()
+
+
 # 使用示例
 if __name__ == "__main__":
     file_to_upload = "/home/bot/app/backup_data_and_logs.tar.gz"
     result = upload_file_to_baidu(
         file_to_upload, "/W1ndysBot/backup_data_and_logs.tar.gz"
     )
+    dingtalk(f"W1ndysBot备份数据上传百度网盘成功：{result}", "上传成功")
     print(result)
