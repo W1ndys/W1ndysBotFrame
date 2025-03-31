@@ -8,17 +8,12 @@ import urllib
 import base64
 import urllib.parse
 from logger import logging
-import asyncio
 from config import DD_BOT_TOKEN, DD_BOT_SECRET
 
 
 # 推送到钉钉
 async def dingtalk(text, desp):
     try:
-        # 这里替换为你自己的TOKEN，不要直接用我的，我的有IP验证，用我的也没用
-        DD_BOT_TOKEN = DD_BOT_TOKEN
-        # 这里替换为你自己的SECRET，不要直接用我的，我的有IP验证，用我的也没用
-        DD_BOT_SECRET = DD_BOT_SECRET
 
         url = f"https://oapi.dingtalk.com/robot/send?access_token={DD_BOT_TOKEN}"
         headers = {"Content-Type": "application/json"}
@@ -51,9 +46,3 @@ async def dingtalk(text, desp):
         return response.json()
     except Exception as e:
         logging.error(f"钉钉发送通知消息失败😞\n{e}")
-
-
-if __name__ == "__main__":
-    DD_BOT_SECRET = "x"
-    DD_BOT_TOKEN = "x"
-    asyncio.run(dingtalk("test", "test"))
