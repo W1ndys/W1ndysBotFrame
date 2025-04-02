@@ -13,20 +13,28 @@ async def send_group_msg(websocket, group_id, message):
     https://napcat.apifox.cn/226799128e0
     """
     try:
+        # 检查message是否为字符串，如果是则转换为列表格式
+        if isinstance(message, str):
+            message = [{"type": "text", "data": {"text": message}}]
+        elif isinstance(message, dict):  # 单个消息对象
+            message = [message]
+        elif not isinstance(message, list):
+            message = [{"type": "text", "data": {"text": str(message)}}]
+
         # 给message添加随机字符串防止频繁
         random_str = str(uuid.uuid4())[:8]
         message.append(
             {
                 "type": "text",
-                "data": {"text": f"{message}\n\n随机ID: {random_str}"},
+                "data": {"text": f"\n\n随机ID: {random_str}"},
             }
         )
 
-        message = {
+        message_data = {
             "action": "send_group_msg",
             "params": {"group_id": group_id, "message": message},
         }
-        await websocket.send(json.dumps(message))
+        await websocket.send(json.dumps(message_data))
         return True
     except Exception as e:
         logging.error(f"[API]发送群聊消息失败: {e}")
@@ -43,19 +51,27 @@ async def send_private_msg(websocket, user_id, message):
     https://napcat.apifox.cn/226799128e0
     """
     try:
+        # 检查message是否为字符串，如果是则转换为列表格式
+        if isinstance(message, str):
+            message = [{"type": "text", "data": {"text": message}}]
+        elif isinstance(message, dict):  # 单个消息对象
+            message = [message]
+        elif not isinstance(message, list):
+            message = [{"type": "text", "data": {"text": str(message)}}]
+
         # 给message添加随机字符串防止频繁
         random_str = str(uuid.uuid4())[:8]
         message.append(
             {
                 "type": "text",
-                "data": {"text": f"{message}\n\n随机ID: {random_str}"},
+                "data": {"text": f"\n\n随机ID: {random_str}"},
             }
         )
-        message = {
+        message_data = {
             "action": "send_private_msg",
             "params": {"user_id": user_id, "message": message},
         }
-        await websocket.send(json.dumps(message))
+        await websocket.send(json.dumps(message_data))
         return True
     except Exception as e:
         logging.error(f"[API]发送私聊消息失败: {e}")
