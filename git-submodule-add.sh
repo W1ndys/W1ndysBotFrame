@@ -33,5 +33,11 @@ git submodule add -b main "${REPO_URL}" "${SUBMODULE_PATH}"
 
 # 输出结果
 echo "子模块已添加到 ${SUBMODULE_PATH}"
+
+# 自动保存提交并推送
+git add .
+git commit -m "添加子模块 ${REPO_NAME}"
+git push
+
 # 暂停三秒
 sleep 3
