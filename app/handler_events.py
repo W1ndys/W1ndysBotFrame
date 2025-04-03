@@ -59,6 +59,7 @@ from app.scripts.GroupEntryVerification.main import (
 from app.scripts.QFNUNoticeMonitor.main import (
     handle_events as handle_QFNUNoticeMonitor_events,
 )
+from app.scripts.Whois.main import handle_events as handle_Whois_events
 
 # 系统模块
 from app.system import handle_events as handle_System_events
@@ -108,5 +109,6 @@ async def handle_message(websocket, message):
         await handle_MuteWheel_events(websocket, msg)
         await handle_LLM_events(websocket, msg)
         await handle_QFNUNoticeMonitor_events(websocket, msg)
+        await handle_Whois_events(websocket, msg)
     except Exception as e:
         logging.error(f"处理ws消息的逻辑错误: {e}")
