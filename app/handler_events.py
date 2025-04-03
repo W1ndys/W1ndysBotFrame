@@ -28,7 +28,6 @@ from app.scripts.TimeAwareGreetings.main import (
     handle_events as handle_TimeAwareGreetings_events,
 )
 
-from app.scripts.PokePal.main import handle_events as handle_PokePal_events
 from app.scripts.NoAddOne.main import handle_events as handle_NoAddOne_events
 from app.scripts.QFNUBustExamClassroomFind.main import (
     handle_events as handle_QFNUBustExamClassroomFind_events,
@@ -50,7 +49,6 @@ from app.scripts.TitleSelfService.main import (
 from app.scripts.MuteWheel.main import handle_events as handle_MuteWheel_events
 from app.scripts.BanWords2.main import handle_events as handle_BanWords2_events
 from app.scripts.LLM.main import handle_events as handle_LLM_events
-from app.scripts.MoodDetector.main import handle_events as handle_MoodDetector_events
 from app.scripts.QFNUEatWhat.main import handle_events as handle_QFNUEatWhat_events
 from app.scripts.QFNUGetFreeClassrooms.main import (
     handle_events as handle_QFNUGetFreeClassrooms_events,
@@ -96,7 +94,6 @@ async def handle_message(websocket, message):
         await handle_SoftBan_events(websocket, msg)
         await handle_Custom_events(websocket, msg)
         await handle_TimeAwareGreetings_events(websocket, msg)
-        # await handle_PokePal_events(websocket, msg) # 暂时关闭骚扰
         await handle_NoAddOne_events(websocket, msg)
         await handle_QFNUBustExamClassroomFind_events(websocket, msg)
         await handle_QFNUClassRegistrationCheck_events(websocket, msg)
@@ -110,7 +107,6 @@ async def handle_message(websocket, message):
         await handle_TitleSelfService_events(websocket, msg)
         await handle_MuteWheel_events(websocket, msg)
         await handle_LLM_events(websocket, msg)
-        await handle_MoodDetector_events(websocket, msg)
         await handle_QFNUNoticeMonitor_events(websocket, msg)
     except Exception as e:
         logging.error(f"处理ws消息的逻辑错误: {e}")
