@@ -145,3 +145,7 @@
 	path = app/scripts/DormitoryHygieneArrangement
 	url = git@github.com:W1ndysBot/DormitoryHygieneArrangement.git
 	branch = main
+[submodule "app/scripts/Whois"]
+	path = app/scripts/Whois
+	url = git@github.com:W1ndysBot/Whois.git
+	branch = main
