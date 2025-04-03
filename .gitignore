@@ -16,4 +16,4 @@ app/data/
 app/logs/
 
 app/backup-scripts.tar.gz
-.cursor/rules/w1ndysbot-rules.mdc
+.cursor/
