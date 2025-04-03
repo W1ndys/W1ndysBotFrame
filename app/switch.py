@@ -131,6 +131,9 @@ async def handle_events(websocket, msg):
     """统一事件处理入口"""
     post_type = msg.get("post_type", "response")  # 添加默认值
     try:
+        # 确保数据目录存在
+        os.makedirs(SWITCH_DATA_DIR, exist_ok=True)
+
         # 处理回调事件
         if msg.get("status") == "ok":
             pass
@@ -153,7 +156,7 @@ async def handle_events(websocket, msg):
         # 处理通知事件
         elif post_type == "notice":
             if msg.get("notice_type") == "group":
-                return
+                load_switch(msg.get("group_id"), "GroupEntryVerification")
 
     except Exception as e:
         error_type = {
