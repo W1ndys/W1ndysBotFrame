@@ -9,9 +9,3 @@ ws_url = "ws://127.0.0.1:3001"
 
 # 如果需要认证，请填写认证 token
 token = None
-
-# 钉钉机器人 token
-DD_BOT_TOKEN = "dingtalk_token"
-
-# 钉钉机器人 secret
-DD_BOT_SECRET = "dingtalk_secret"
