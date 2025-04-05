@@ -32,9 +32,9 @@ main() {
     check_requirements
     cleanup
 
-    # 获取当前用户的 UID 和 GID
-    NAPCAT_UID=$(id -u)
-    NAPCAT_GID=$(id -g)
+    # 设置 NAPCAT_UID 和 NAPCAT_GID
+    NAPCAT_UID=1000
+    NAPCAT_GID=1000
 
     log "启动 Napcat Docker 容器..."
     
