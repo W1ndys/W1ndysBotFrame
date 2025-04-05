@@ -33,9 +33,9 @@ log "删除容器 $container_name"
 docker stop $container_name
 docker rm $container_name
 
-# 获取当前用户的 UID 和 GID
-NAPCAT_UID=$(id -u)
-NAPCAT_GID=$(id -g)
+# 设置 NAPCAT_UID 和 NAPCAT_GID
+NAPCAT_UID=1000
+NAPCAT_GID=1000
 
 # Step 3: 使用新镜像运行容器
 log "以新版镜像运行同名容器 $container_name"
