@@ -40,7 +40,7 @@ NAPCAT_GID=1000
 # Step 3: 使用新镜像运行容器
 log "以新版镜像运行同名容器 $container_name"
 docker run -d --name $container_name --restart=always \
-  --network host \
+  --network bridge \
   -e NAPCAT_UID=$NAPCAT_UID \
   -e NAPCAT_GID=$NAPCAT_GID \
   -p 3000:3000 \

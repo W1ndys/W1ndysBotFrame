@@ -40,7 +40,7 @@ main() {
     
     # 启动 Docker 容器
     if docker run -d \
-        --network host \
+        --network bridge \
         -e NAPCAT_GID=$NAPCAT_GID \
         -e NAPCAT_UID=$NAPCAT_UID \
         -p 3000:3000 \
