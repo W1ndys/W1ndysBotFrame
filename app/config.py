@@ -8,4 +8,4 @@ owner_id = ["2769731875"]
 ws_url = "ws://127.0.0.1:3001"
 
 # 如果需要认证，请填写认证 token
-token = None
+token = "wsws"

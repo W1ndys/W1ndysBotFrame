@@ -52,35 +52,23 @@ async def connect_to_bot():
     logging.info("正在连接到机器人...")
     logging.info(f"连接地址: {ws_url}")
 
-    # 如果 token 不为 None，则添加到请求头
-    if token:
-        async with websockets.connect(
-            ws_url, extra_headers={"Authorization": f"Bearer {token}"}
-        ) as websocket:
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            logging.info(f"已连接到机器人。当前时间: {current_time}")
-            await send_private_msg(
-                websocket, owner_id[0], f"我tm来了！当前时间: {current_time}"
-            )
-            async for message in websocket:
-                # 清理已完成的任务
-                clean_tasks(tasks)
-                # 创建新任务并添加到任务集合
-                task = asyncio.create_task(process_message(websocket, message))
-                tasks.add(task)
-    else:
-        async with websockets.connect(ws_url) as websocket:
-            current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            logging.info(f"已连接到机器人。当前时间: {current_time}")
-            await send_private_msg(
-                websocket, owner_id[0], f"我tm来了！当前时间: {current_time}"
-            )
-            async for message in websocket:
-                # 清理已完成的任务
-                clean_tasks(tasks)
-                # 创建新任务并添加到任务集合
-                task = asyncio.create_task(process_message(websocket, message))
-                tasks.add(task)
+    # 连接到 WebSocket
+    async with websockets.connect(ws_url) as websocket:
+        # 如果 token 不为 None，则发送认证信息
+        if token is not None:
+            await websocket.send(f"Bearer {token}")
+
+        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        logging.info(f"已连接到机器人。当前时间: {current_time}")
+        await send_private_msg(
+            websocket, owner_id[0], f"我tm来了！当前时间: {current_time}"
+        )
+        async for message in websocket:
+            # 清理已完成的任务
+            clean_tasks(tasks)
+            # 创建新任务并添加到任务集合
+            task = asyncio.create_task(process_message(websocket, message))
+            tasks.add(task)
 
 
 if __name__ == "__main__":
