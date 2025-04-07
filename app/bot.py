@@ -50,14 +50,20 @@ async def connect_to_bot():
                 logging.exception("详细错误信息:")
 
     logging.info("正在连接到机器人...")
-    logging.info(f"连接地址: {ws_url}")
+
+    # 如果 token 不为 None，则在 URL 中添加 token 参数
+    connection_url = ws_url
+    if token is not None:
+        # 检查 URL 是否已经包含参数
+        if "?" in ws_url:
+            connection_url = f"{ws_url}&access_token={token}"
+        else:
+            connection_url = f"{ws_url}?access_token={token}"
+
+    logging.info(f"连接地址: {connection_url}")
 
     # 连接到 WebSocket
-    async with websockets.connect(ws_url) as websocket:
-        # 如果 token 不为 None，则发送认证信息
-        if token is not None:
-            await websocket.send(f"Bearer {token}")
-
+    async with websockets.connect(connection_url) as websocket:
         current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         logging.info(f"已连接到机器人。当前时间: {current_time}")
         await send_private_msg(
