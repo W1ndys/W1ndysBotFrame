@@ -43,6 +43,7 @@ main() {
         --network bridge \
         -e NAPCAT_GID=$NAPCAT_GID \
         -e NAPCAT_UID=$NAPCAT_UID \
+        -e ACCOUNT=3649056059 \
         -p 3000:3000 \
         -p 3001:3001 \
         -p 6099:6099 \
@@ -52,7 +53,6 @@ main() {
         -v "${SCRIPT_DIR}/napcat/app/napcat:/app/napcat" \
         -v "/home/bot/app/scripts/:/home/bot/app/scripts/" \
         mlikiowa/napcat-docker; then
-        
         log "Napcat Docker 容器已成功启动"
     else
         log "错误: 启动 Napcat Docker 容器失败"

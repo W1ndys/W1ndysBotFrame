@@ -43,6 +43,7 @@ docker run -d --name $container_name --restart=always \
   --network bridge \
   -e NAPCAT_UID=$NAPCAT_UID \
   -e NAPCAT_GID=$NAPCAT_GID \
+  -e ACCOUNT=3649056059 \
   -p 3000:3000 \
   -p 3001:3001 \
   -p 6099:6099 \
