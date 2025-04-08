@@ -197,3 +197,5 @@ if __name__ == "__main__":
     )
     dingtalk(f"W1ndysBot备份数据上传百度网盘成功：{result}", "上传成功")
     print(result)
+    # 删除本地文件
+    os.remove(file_to_upload)
