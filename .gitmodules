@@ -149,3 +149,7 @@
 	path = app/scripts/Whois
 	url = git@github.com:W1ndysBot/Whois.git
 	branch = main
+[submodule "app/scripts/SayBan"]
+	path = app/scripts/SayBan
+	url = git@github.com:W1ndysBot/SayBan.git
+	branch = main
