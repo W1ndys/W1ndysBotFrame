@@ -6,6 +6,7 @@ import time
 import subprocess
 import datetime
 import logging
+import re
 
 # 设置日志
 logging.basicConfig(
@@ -95,7 +96,7 @@ def upload_file_to_baidu(local_file_path, remote_path="/"):
     上传文件到百度网盘
     :param local_file_path: 本地文件路径
     :param remote_path: 百度网盘上的目标路径，默认为根目录
-    :return: 上传结果
+    :return: 上传结果和状态码(True/False)
     """
     # 检查bypy是否安装
     if not check_command_exists("bypy"):
@@ -103,12 +104,12 @@ def upload_file_to_baidu(local_file_path, remote_path="/"):
         install_choice = input("是否安装bypy? (y/n): ").lower()
         if install_choice == "y":
             if not install_bypy():
-                return "错误：bypy安装失败，无法继续上传"
+                return "错误：bypy安装失败，无法继续上传", False
         else:
-            return "错误：未安装bypy，无法继续上传"
+            return "错误：未安装bypy，无法继续上传", False
 
     if not os.path.exists(local_file_path):
-        return f"错误：文件 {local_file_path} 不存在"
+        return f"错误：文件 {local_file_path} 不存在", False
 
     # 检查bypy是否已授权，添加超时机制
     logger.info("检查百度网盘授权状态...")
@@ -130,7 +131,7 @@ def upload_file_to_baidu(local_file_path, remote_path="/"):
             logger.info("bypy info")
             proceed = input("授权完成后，输入'y'继续，输入其他退出: ")
             if proceed.lower() != "y":
-                return "用户取消了操作"
+                return "用户取消了操作", False
         else:
             logger.info("bypy已授权，可以继续上传操作")
 
@@ -141,7 +142,7 @@ def upload_file_to_baidu(local_file_path, remote_path="/"):
         logger.info("请手动运行'bypy info'命令完成授权")
         proceed = input("授权完成后，输入'y'继续，输入其他退出: ")
         if proceed.lower() != "y":
-            return "用户取消了操作"
+            return "用户取消了操作", False
 
     # 执行上传命令
     command = f"bypy upload {local_file_path} {remote_path}"
@@ -155,12 +156,62 @@ def upload_file_to_baidu(local_file_path, remote_path="/"):
             text=True,
             timeout=600,  # 10分钟超时
         )
-        return f"上传成功：{result.stdout}"
+
+        output = result.stdout
+        logger.info(f"上传命令输出: {output}")
+
+        # 检查常见错误
+        # 1. 检查是否有明确的错误码
+        if "Error" in output or "error" in output.lower() or "错误" in output:
+            error_match = re.search(r"Error\s+(\d+)", output)
+            if error_match:
+                error_code = error_match.group(1)
+                return f"上传失败：遇到错误代码 {error_code}，请检查百度网盘状态", False
+            else:
+                return f"上传失败：{output}", False
+
+        # 2. 特别检查文件名包含非法字符的错误
+        if (
+            "非法字符" in output
+            or "illegal character" in output.lower()
+            or "冒号" in output
+        ):
+            return (
+                f"上传失败：文件名包含非法字符 (可能是冒号)，请修改文件名后重试",
+                False,
+            )
+
+        # 3. 检查成功标志 - 扩展成功判断条件
+        success_indicators = [
+            "上传文件完成",
+            "Upload completed",
+            "upload total size",
+            "100%",
+            "completed: 1",
+        ]
+
+        for indicator in success_indicators:
+            if indicator in output:
+                return f"上传成功：\n{output}", True
+
+        # 4. 检查默认成功标志
+        if result.returncode == 0 and not (
+            "Error" in output or "error" in output.lower()
+        ):
+            # 如果返回码是0，并且没有错误关键字，通常也认为是成功的
+            return f"上传可能成功，请检查百度网盘确认：\n{output}", True
+
+        # 如果没有匹配任何条件，返回不确定结果
+        return f"上传结果不确定，请检查百度网盘：\n{output}", False
+
     except subprocess.TimeoutExpired:
-        return "上传操作超时，请检查网络连接或文件大小"
+        return "上传操作超时，请检查网络连接或文件大小", False
     except subprocess.CalledProcessError as e:
-        # 如果是授权问题，提示用户进行授权
-        if "授权" in e.stderr or "authorize" in e.stderr.lower():
+        stderr_output = e.stderr
+        logger.error(f"上传失败，错误输出: {stderr_output}")
+
+        # 检查授权问题
+        if "授权" in stderr_output or "authorize" in stderr_output.lower():
             logger.info("需要进行百度网盘授权，请手动运行以下命令:")
             logger.info("bypy info")
             logger.info("并按照提示完成授权")
@@ -176,14 +227,71 @@ def upload_file_to_baidu(local_file_path, remote_path="/"):
                         text=True,
                         timeout=600,
                     )
-                    return f"授权成功，上传完成：{retry_result.stdout}"
+
+                    retry_output = retry_result.stdout
+                    logger.info(f"重试上传命令输出: {retry_output}")
+
+                    # 使用相同的成功判断逻辑
+                    if (
+                        "Error" in retry_output
+                        or "error" in retry_output.lower()
+                        or "错误" in retry_output
+                    ):
+                        error_match = re.search(r"Error\s+(\d+)", retry_output)
+                        if error_match:
+                            error_code = error_match.group(1)
+                            return f"重试上传失败：遇到错误代码 {error_code}", False
+                        else:
+                            return f"重试上传失败：{retry_output}", False
+
+                    # 检查成功标志
+                    success_indicators = [
+                        "上传文件完成",
+                        "Upload completed",
+                        "upload total size",
+                        "100%",
+                        "completed: 1",
+                    ]
+
+                    for indicator in success_indicators:
+                        if indicator in retry_output:
+                            return f"授权成功，上传完成：\n{retry_output}", True
+
+                    # 默认成功判断
+                    if retry_result.returncode == 0 and not (
+                        "Error" in retry_output or "error" in retry_output.lower()
+                    ):
+                        return (
+                            f"授权成功，上传可能成功，请检查百度网盘确认：\n{retry_output}",
+                            True,
+                        )
+
+                    # 未知结果
+                    return (
+                        f"重试上传结果不确定，请检查百度网盘：\n{retry_output}",
+                        False,
+                    )
+
                 except subprocess.CalledProcessError as retry_e:
-                    return f"重试上传失败：{retry_e.stderr}"
+                    return f"重试上传失败：{retry_e.stderr}", False
                 except subprocess.TimeoutExpired:
-                    return "重试上传操作超时"
+                    return "重试上传操作超时", False
             else:
-                return "用户取消了操作"
-        return f"上传失败：{e.stderr}"
+                return "用户取消了操作", False
+
+        # 检查文件名错误
+        if (
+            "非法字符" in stderr_output
+            or "illegal character" in stderr_output.lower()
+            or "冒号" in stderr_output
+        ):
+            return (
+                f"上传失败：文件名包含非法字符 (可能是冒号)，请修改文件名后重试",
+                False,
+            )
+
+        # 其他错误
+        return f"上传失败：{stderr_output}", False
 
 
 def backup_data_and_logs():
@@ -192,7 +300,7 @@ def backup_data_and_logs():
     try:
         os.chdir("/home/bot/app")
     except Exception as e:
-        logger.error("/home/bot/app 目录不存在或无法访问")
+        logger.error(f"/home/bot/app 目录不存在或无法访问: {e}")
         return False
 
     # 检查data和logs目录是否存在
@@ -200,9 +308,11 @@ def backup_data_and_logs():
         logger.error("data 或 logs 目录不存在")
         return False
 
-    # 获取当前日期和时间，使用连字符和冒号美化格式
-    current_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-    archive_name = f"backup_data_and_logs_{current_datetime}.tar.gz"
+    # 获取当前日期，只使用年月日，不使用冒号和时分秒
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    # 如果需要包含时间但不使用冒号，可以用下面的格式
+    # current_datetime = datetime.datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    archive_name = f"backup_data_and_logs_{current_date}.tar.gz"
 
     try:
         # 打包data和logs目录
@@ -231,12 +341,29 @@ def main():
     file_name = os.path.basename(archive_path)
     remote_path = f"{remote_dir}{file_name}"
 
-    result = upload_file_to_baidu(archive_path, remote_path)
+    result_message, success = upload_file_to_baidu(archive_path, remote_path)
+
+    # 检查百度网盘上是否有该文件 (通过列出目录来验证)
+    verify_command = f"bypy list {remote_dir}"
+    try:
+        verify_result = subprocess.run(
+            verify_command, shell=True, capture_output=True, text=True, timeout=30
+        )
+
+        # 如果文件名出现在列表中，则确认上传成功
+        if file_name in verify_result.stdout:
+            success = True
+            result_message = f"文件已成功上传到百度网盘并已验证存在\n{result_message}"
+            logger.info(f"已验证文件 {file_name} 存在于百度网盘")
+    except Exception as e:
+        logger.warning(f"验证文件是否上传成功时出错: {e}")
+        # 继续处理，不改变原有的成功标志
 
     # 步骤3: 发送飞书通知
-    if "上传成功" in result:
+    if success:
         send_feishu_notification(
-            f"W1ndysBot备份数据上传百度网盘成功", f"文件名: {file_name}\n{result}"
+            f"W1ndysBot备份数据上传百度网盘成功",
+            f"文件名: {file_name}\n{result_message}",
         )
         # 删除本地文件
         try:
@@ -246,8 +373,10 @@ def main():
             logger.error(f"删除本地文件失败: {e}")
     else:
         send_feishu_notification(
-            "W1ndysBot备份数据上传百度网盘失败", f"失败原因: {result}"
+            "W1ndysBot备份数据上传百度网盘失败",
+            f"文件名: {file_name}\n失败原因: {result_message}",
         )
+        logger.error(f"上传失败，保留本地文件: {archive_path}")
 
 
 if __name__ == "__main__":
