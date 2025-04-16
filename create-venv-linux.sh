@@ -1,5 +1,5 @@
 #!/bin/bash
-
+dos2unix "$0"
 # 检查Python是否安装
 if ! which python3 > /dev/null 2>&1
 then

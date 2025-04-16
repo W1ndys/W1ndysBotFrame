@@ -1,5 +1,5 @@
 #!/bin/bash
-
+dos2unix "$0"
 # 获取当前时间的函数
 log() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"

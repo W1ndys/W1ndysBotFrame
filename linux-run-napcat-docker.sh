@@ -1,5 +1,5 @@
 #!/bin/bash
-
+dos2unix "$0"
 # 设置严格模式
 set -euo pipefail
 
