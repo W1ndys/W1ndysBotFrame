@@ -162,7 +162,7 @@ async def handle_request_event(websocket, msg):
 
 class OnlineDetectManager:
     def __init__(self):
-        self.is_online = None  # 初始状态为未知
+        self.is_online = True  # 初始状态为在线
         self.last_state_change_time = 0
         self.last_report_time = 0
         # 状态变化的最小时间间隔(秒)，防止频繁上报
