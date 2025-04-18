@@ -8,6 +8,9 @@ import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# 导入在线监测模块
+from app.core.online_detect import Online_detect_manager
+
 # 统一从各模块导入事件处理器
 from app.scripts.ImageGenerate.main import handle_events as handle_ImageGenerate_events
 from app.scripts.SendAll.main import handle_events as handle_SendAll_events
@@ -77,6 +80,9 @@ async def handle_message(websocket, message):
         # 系统基础功能
         await handle_System_events(websocket, msg)
         await handle_Switch_events(websocket, msg)
+
+        # 在线监测模块
+        await Online_detect_manager.handle_events(websocket, msg)
 
         # 功能模块事件处理
         await handle_GroupEntryVerification_events(websocket, msg)
