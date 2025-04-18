@@ -58,3 +58,4 @@ urllib3==2.3.0
 websockets==14.2
 wordcloud==1.9.4
 yarl==1.18.3
+python-dotenv
