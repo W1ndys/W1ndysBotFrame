@@ -7,6 +7,9 @@ import subprocess
 import datetime
 import logging
 import re
+import hmac
+import hashlib
+import base64
 
 # 设置日志
 logging.basicConfig(
@@ -15,37 +18,42 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # 飞书webhook地址
-FEISHU_WEBHOOK_URL = (
+FEISHU_BOT_URL = (
     "https://open.feishu.cn/open-apis/bot/v2/hook/55648a44-6e84-4d8c-af16-30065ffba8c1"
 )
 
+# 飞书机器人验证关键词
+FEISHU_BOT_SECRET = "zOrUWi4tEpPUafjtJoRkD"
 
-def send_feishu_notification(title, content=""):
+
+def send_feishu_notification(title: str, content: str):
     """
     发送飞书通知
-    :param title: 通知标题
-    :param content: 通知内容
-    :return: 响应结果
+    参数:
+        FEISHU_BOT_URL: 飞书机器人URL
+        FEISHU_BOT_SECRET: 飞书机器人验证关键词
+        title: 消息标题
+        text: 消息内容
     """
-    url = FEISHU_WEBHOOK_URL
+    if not FEISHU_BOT_URL or not FEISHU_BOT_SECRET:
+        logging.error("飞书机器人URL或SECRET未配置")
+        return
+
     headers = {"Content-Type": "application/json"}
+    data = {
+        "msg_type": "text",
+        "content": {"text": f"{title}\n{content}\n{FEISHU_BOT_SECRET}"},
+    }
 
-    # 使用文本类型消息
-    payload = {"msg_type": "text", "content": {"text": f"{title}\n{content}"}}
-
-    try:
-        response = requests.post(url, headers=headers, data=json.dumps(payload))
-        data = response.json()
-
-        if response.status_code == 200 and data.get("code") == 0:
-            logger.info("飞书通知发送成功🎉")
-        else:
-            logger.error(f"飞书通知发送失败😞\n{data.get('msg')}")
-
-        return data
-    except Exception as e:
-        logger.error(f"飞书通知发送失败😞\n{e}")
-        raise
+    response = requests.post(FEISHU_BOT_URL, headers=headers, json=data)
+    if response.json()["code"] == 0:
+        logging.info("飞书通知发送成功")
+        return response.json()
+    else:
+        logging.error(
+            f"飞书通知发送失败，状态码: {response.status_code}，错误信息: {response.json()}"
+        )
+        return response.json()
 
 
 def check_command_exists(command):
