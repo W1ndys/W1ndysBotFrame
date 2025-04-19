@@ -1,69 +1,61 @@
 #!/bin/bash
 
-# 获取要搜索的目录，如果没有提供参数则使用默认目录
-if [ -n "$1" ]; then
-    TARGET_DIR="$1"
-else
-    TARGET_DIR="/home/bot/app/scripts"
-fi
+# 默认目录
+DEFAULT_DIR="/home/bot/app/scripts"
+
+# 颜色定义
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# 使用用户提供的目录或默认目录
+TARGET_DIR="${1:-$DEFAULT_DIR}"
 
 # 检查目录是否存在
 if [ ! -d "$TARGET_DIR" ]; then
-    echo "错误：目录 $TARGET_DIR 不存在！"
+    echo -e "${RED}错误：目录 '$TARGET_DIR' 不存在${NC}"
     exit 1
 fi
 
-echo "将在目录 $TARGET_DIR 中搜索Git相关文件"
+echo -e "${YELLOW}正在搜索Git相关文件，目录: $TARGET_DIR${NC}"
 
-# 定义要查找的Git相关文件
-GIT_FILES=".git .gitignore .gitmodules .gitattributes"
+# 查找Git相关文件
+git_files=()
+while IFS= read -r -d $'\0' file; do
+    git_files+=("$file")
+done < <(find "$TARGET_DIR" \( -name ".git" -o -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" \) -print0)
 
-# 构建查找命令
-FIND_CMD="find $TARGET_DIR \("
-first=true
-
-for file in $GIT_FILES; do
-    if [ "$first" = true ]; then
-        FIND_CMD="$FIND_CMD -name \"$file\""
-        first=false
-    else
-        FIND_CMD="$FIND_CMD -o -name \"$file\""
-    fi
-done
-FIND_CMD="$FIND_CMD \)"
-
-# 将结果保存到临时文件
-TEMP_FILE=$(mktemp)
-eval "$FIND_CMD" > "$TEMP_FILE"
-
-# 检查是否找到文件
-FILE_COUNT=$(wc -l < "$TEMP_FILE")
-
-if [ "$FILE_COUNT" -eq 0 ]; then
-    echo "没有找到任何Git相关文件！"
-    rm "$TEMP_FILE"
+# 显示结果
+if [ ${#git_files[@]} -eq 0 ]; then
+    echo -e "${GREEN}没有找到任何Git相关文件${NC}"
     exit 0
 fi
 
-# 显示将要删除的文件
-echo "以下Git相关文件将被删除："
-cat "$TEMP_FILE"
-echo "共找到 $FILE_COUNT 个文件"
+echo -e "${YELLOW}找到以下Git相关文件 (共 ${#git_files[@]} 个):${NC}"
+for file in "${git_files[@]}"; do
+    echo "  $file"
+done
 
 # 确认删除
-read -p "确认删除以上文件吗？(y/n): " confirm
-if [ "$confirm" != "y" ]; then
-    echo "取消删除"
-    rm "$TEMP_FILE"
-    exit 1
+echo -e "${YELLOW}\n是否要删除这些文件? [y/N]${NC}"
+read -r response
+if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
+    echo -e "${YELLOW}开始删除...${NC}"
+    deleted_count=0
+    for file in "${git_files[@]}"; do
+        if [ -e "$file" ]; then
+            if rm -rf "$file"; then
+                echo -e "${GREEN}已删除: $file${NC}"
+                ((deleted_count++))
+            else
+                echo -e "${RED}删除失败: $file${NC}"
+            fi
+        else
+            echo -e "${YELLOW}文件不存在(可能已被删除): $file${NC}"
+        fi
+    done
+    echo -e "${YELLOW}删除完成. 共删除 $deleted_count 个文件${NC}"
+else
+    echo -e "${GREEN}取消删除操作${NC}"
 fi
-
-# 执行删除操作
-echo "正在删除文件..."
-while read file; do
-    rm -rf "$file"
-    echo "已删除: $file"
-done < "$TEMP_FILE"
-
-rm "$TEMP_FILE"
-echo "删除完成"
