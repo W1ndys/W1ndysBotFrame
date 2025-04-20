@@ -3,8 +3,7 @@
 import logging
 import os
 import sys
-import re
-import json
+
 from app.core.feishu import feishu
 from app.core.dingtalk import dingtalk
 import time
