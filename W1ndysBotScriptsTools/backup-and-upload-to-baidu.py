@@ -28,32 +28,54 @@ FEISHU_BOT_SECRET = "zOrUWi4tEpPUafjtJoRkD"
 
 def send_feishu_notification(title: str, content: str):
     """
-    发送飞书通知
+    发送飞书通知，带签名验证
     参数:
-        FEISHU_BOT_URL: 飞书机器人URL
-        FEISHU_BOT_SECRET: 飞书机器人验证关键词
         title: 消息标题
-        text: 消息内容
+        content: 消息内容
     """
     if not FEISHU_BOT_URL or not FEISHU_BOT_SECRET:
         logging.error("飞书机器人URL或SECRET未配置")
         return
 
+    # 生成时间戳和签名
+    timestamp = str(int(time.time()))
+    string_to_sign = f"{timestamp}\n{FEISHU_BOT_SECRET}"
+    hmac_code = hmac.new(
+        string_to_sign.encode("utf-8"), digestmod=hashlib.sha256
+    ).digest()
+    sign = base64.b64encode(hmac_code).decode("utf-8")
+
+    # 构建请求头
     headers = {"Content-Type": "application/json"}
-    data = {
-        "msg_type": "text",
-        "content": {"text": f"{title}\n{content}\n{FEISHU_BOT_SECRET}"},
+
+    # 构建消息内容 - 使用富文本格式
+    msg = {
+        "timestamp": timestamp,
+        "sign": sign,
+        "msg_type": "post",
+        "content": {
+            "post": {
+                "zh_cn": {
+                    "title": title,
+                    "content": [[{"tag": "text", "text": content}]],
+                }
+            }
+        },
     }
 
-    response = requests.post(FEISHU_BOT_URL, headers=headers, json=data)
-    if response.json()["code"] == 0:
-        logging.info("飞书通知发送成功")
-        return response.json()
-    else:
-        logging.error(
-            f"飞书通知发送失败，状态码: {response.status_code}，错误信息: {response.json()}"
-        )
-        return response.json()
+    try:
+        response = requests.post(FEISHU_BOT_URL, headers=headers, json=msg)
+        if response.json().get("code") == 0:
+            logging.info("飞书通知发送成功")
+            return response.json()
+        else:
+            logging.error(
+                f"飞书通知发送失败，状态码: {response.status_code}，错误信息: {response.json()}"
+            )
+            return response.json()
+    except Exception as e:
+        logging.error(f"飞书通知发送异常: {e}")
+        return {"error": str(e)}
 
 
 def check_command_exists(command):
