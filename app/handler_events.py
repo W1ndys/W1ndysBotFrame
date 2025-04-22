@@ -64,6 +64,7 @@ from app.scripts.QFNUNoticeMonitor.main import (
 )
 from app.scripts.Whois.main import handle_events as handle_Whois_events
 from app.scripts.SayBan.main import handle_events as handle_SayBan_events
+from app.scripts.AnswerBook.main import handle_events as handle_AnswerBook_events
 
 # 系统模块
 from app.system import handle_events as handle_System_events
@@ -118,5 +119,6 @@ async def handle_message(websocket, message):
         await handle_QFNUNoticeMonitor_events(websocket, msg)
         await handle_Whois_events(websocket, msg)
         await handle_SayBan_events(websocket, msg)
+        await handle_AnswerBook_events(websocket, msg)
     except Exception as e:
         logging.error(f"处理ws消息的逻辑错误: {e}")
