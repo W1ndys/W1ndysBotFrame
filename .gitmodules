@@ -153,3 +153,7 @@
 	path = app/scripts/SayBan
 	url = git@github.com:W1ndysBot/SayBan.git
 	branch = main
+[submodule "app/scripts/AnswerBook"]
+	path = app/scripts/AnswerBook
+	url = git@github.com:W1ndysBot/AnswerBook.git
+	branch = main
