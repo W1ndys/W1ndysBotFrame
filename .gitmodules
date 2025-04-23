@@ -157,3 +157,7 @@
 	path = app/scripts/AnswerBook
 	url = git@github.com:W1ndysBot/AnswerBook.git
 	branch = main
+[submodule "app/scripts/FunnySayings"]
+	path = app/scripts/FunnySayings
+	url = git@github.com:W1ndysBot/FunnySayings.git
+	branch = main
