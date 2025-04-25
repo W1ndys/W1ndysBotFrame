@@ -109,7 +109,7 @@ async def send_group_msg(websocket, group_id, content):
         message = {
             "action": "send_group_msg",
             "params": {"group_id": group_id, "message": content},
-            "echo": f"send_group_msg_{content}",
+            "echo": f"send_group_msg_{content[0:100]}",
         }
         await websocket.send(json.dumps(message))
         logging.info(f"[API]已发送群消息到群 {group_id}")

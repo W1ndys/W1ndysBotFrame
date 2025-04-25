@@ -65,6 +65,7 @@ from app.scripts.QFNUNoticeMonitor.main import (
 from app.scripts.Whois.main import handle_events as handle_Whois_events
 from app.scripts.SayBan.main import handle_events as handle_SayBan_events
 from app.scripts.AnswerBook.main import handle_events as handle_AnswerBook_events
+from app.scripts.FunnySayings.main import handle_events as handle_FunnySayings_events
 
 # 系统模块
 from app.system import handle_events as handle_System_events
@@ -86,6 +87,8 @@ async def handle_message(websocket, message):
         await Online_detect_manager.handle_events(websocket, msg)
 
         # 功能模块事件处理
+        await handle_FunnySayings_events(websocket, msg)
+
         await handle_GroupEntryVerification_events(websocket, msg)
         await handle_QFNUEatWhat_events(websocket, msg)
         await handle_BanWords2_events(websocket, msg)
