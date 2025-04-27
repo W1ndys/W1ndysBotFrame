@@ -48,8 +48,8 @@ def is_authorized(role, user_id):
 async def send_private_msg(websocket, user_id, content):
     try:
         # 使用更短的随机字符串
-        random_str = str(uuid.uuid4())[:8]
-        content = f"{content}\n\n随机ID: {random_str}"
+        # random_str = str(uuid.uuid4())[:8]
+        # content = f"{content}\n\n随机ID: {random_str}"
         message = {
             "action": "send_private_msg",
             "params": {"user_id": user_id, "message": content},
@@ -66,8 +66,8 @@ async def send_private_msg(websocket, user_id, content):
 async def send_private_msg_no_cq(websocket, user_id, content, auto_escape=True):
     try:
         # 使用更短的随机字符串
-        random_str = str(uuid.uuid4())[:8]
-        content = f"{content}\n\n随机ID: {random_str}"
+        # random_str = str(uuid.uuid4())[:8]
+        # content = f"{content}\n\n随机ID: {random_str}"
         message = {
             "action": "send_private_msg",
             "params": {
