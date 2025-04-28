@@ -64,11 +64,6 @@ async def connect_to_bot():
 
     # 连接到 WebSocket
     async with websockets.connect(connection_url) as websocket:
-        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        logging.info(f"已连接到机器人。当前时间: {current_time}")
-        await send_private_msg(
-            websocket, owner_id[0], f"我tm来了！当前时间: {current_time}"
-        )
         async for message in websocket:
             # 清理已完成的任务
             clean_tasks(tasks)

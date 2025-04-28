@@ -3,6 +3,7 @@
 import logging
 import os
 import sys
+import asyncio
 
 from app.core.feishu import feishu
 from app.core.dingtalk import dingtalk
@@ -166,16 +167,43 @@ class OnlineDetectManager:
         self.last_report_time = 0
         # 状态变化的最小时间间隔(秒)，防止频繁上报
         self.min_report_interval = 60
+        self.owner_id = owner_id
+
+    async def handle_events(self, websocket, message):
+        """处理元事件，包括首次连接和心跳事件"""
+        # 处理首次连接事件
+        if (
+            message.get("post_type") == "meta_event"
+            and message.get("meta_event_type") == "lifecycle"
+            and message.get("sub_type") == "connect"
+        ):
+            current_time = time.strftime(
+                "%Y-%m-%d %H:%M:%S",
+                time.localtime(message.get("time", int(time.time()))),
+            )
+            connect_msg = f"W1ndysBot已上线！\n机器人ID: {message.get('self_id')}\n上线时间: {current_time}"
+            logging.info(f"机器人首次连接: {connect_msg}")
+
+            # 向所有管理员发送私聊消息
+            try:
+                tasks = [
+                    send_private_msg(websocket, owner, connect_msg)
+                    for owner in self.owner_id
+                ]
+                await asyncio.gather(*tasks)
+            except Exception as e:
+                logging.error(f"发送上线通知失败: {e}")
+            return
+
+        # 处理心跳事件
+        if (
+            message.get("post_type") == "meta_event"
+            and message.get("meta_event_type") == "heartbeat"
+        ):
+            await self.handle_heartbeat(websocket, message)
 
     async def handle_heartbeat(self, websocket, message):
         """处理心跳事件，检测在线状态"""
-        # 只处理心跳事件
-        if (
-            message.get("post_type") != "meta_event"
-            or message.get("meta_event_type") != "heartbeat"
-        ):
-            return
-
         # 获取在线状态
         status = message.get("status", {})
         current_online = status.get("online", False)
@@ -218,15 +246,6 @@ class OnlineDetectManager:
             # 更新状态
             self.is_online = current_online
 
-    async def handle_events(self, websocket, msg):
-        """统一事件处理入口"""
-        # 只处理心跳事件
-        if (
-            msg.get("post_type") == "meta_event"
-            and msg.get("meta_event_type") == "heartbeat"
-        ):
-            await self.handle_heartbeat(websocket, msg)
-
 
 # 创建全局实例
 Online_detect_manager = OnlineDetectManager()
@@ -248,7 +267,7 @@ async def handle_events(websocket, msg):
 
         # 处理元事件，每次心跳时触发，用于一些定时任务
         if post_type == "meta_event":
-            await Online_detect_manager.handle_heartbeat(websocket, msg)
+            await Online_detect_manager.handle_events(websocket, msg)
 
         # 处理消息事件，用于处理群消息和私聊消息
         elif post_type == "message":
