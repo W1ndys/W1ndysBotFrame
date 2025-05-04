@@ -161,3 +161,7 @@
 	path = app/scripts/FunnySayings
 	url = git@github.com:W1ndysBot/FunnySayings.git
 	branch = main
+[submodule "app/scripts/QFNUElectricityQuery"]
+	path = app/scripts/QFNUElectricityQuery
+	url = git@github.com:W1ndysBot/QFNUElectricityQuery.git
+	branch = main
