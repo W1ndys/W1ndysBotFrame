@@ -66,6 +66,9 @@ from app.scripts.Whois.main import handle_events as handle_Whois_events
 from app.scripts.SayBan.main import handle_events as handle_SayBan_events
 from app.scripts.AnswerBook.main import handle_events as handle_AnswerBook_events
 from app.scripts.FunnySayings.main import handle_events as handle_FunnySayings_events
+from app.scripts.QFNUElectricityQuery.main import (
+    handle_events as handle_QFNUElectricityQuery_events,
+)
 
 # 系统模块
 from app.system import handle_events as handle_System_events
@@ -87,8 +90,12 @@ async def handle_message(websocket, message):
         await Online_detect_manager.handle_events(websocket, msg)
 
         # 功能模块事件处理
-        await handle_FunnySayings_events(websocket, msg)
 
+        # 以下是未测试功能
+        await handle_QFNUGetFreeClassrooms_events(websocket, msg)
+        # 以下是已测试功能
+        # await handle_QFNUElectricityQuery_events(websocket, msg)
+        # await handle_FunnySayings_events(websocket, msg)
         # await handle_GroupEntryVerification_events(websocket, msg)
         # await handle_QFNUEatWhat_events(websocket, msg)
         # await handle_BanWords2_events(websocket, msg)
@@ -113,7 +120,7 @@ async def handle_message(websocket, message):
         # await handle_CET4_events(websocket, msg)
         # await handle_GithubCard_events(websocket, msg)
         # await handle_BilibiliPush_events(websocket, msg)
-        # await handle_QFNUGetFreeClassrooms_events(websocket, msg)
+
         # await handle_GroupLink_events(websocket, msg)
         # await handle_QRCodeInspector_events(websocket, msg)
         # await handle_TitleSelfService_events(websocket, msg)
