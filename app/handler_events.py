@@ -69,6 +69,9 @@ from app.scripts.FunnySayings.main import handle_events as handle_FunnySayings_e
 from app.scripts.QFNUElectricityQuery.main import (
     handle_events as handle_QFNUElectricityQuery_events,
 )
+from app.scripts.LinuxdoReminder.main import (
+    handle_events as handle_LinuxdoReminder_events,
+)
 
 # 系统模块
 from app.system import handle_events as handle_System_events
@@ -92,8 +95,11 @@ async def handle_message(websocket, message):
         # 功能模块事件处理
 
         # 以下是未测试功能
-        await handle_Custom_events(websocket, msg)
+
         # 以下是已测试功能
+        await handle_LinuxdoReminder_events(websocket, msg)
+
+        # await handle_Custom_events(websocket, msg)
         # await handle_QFNUGetFreeClassrooms_events(websocket, msg)
         # await handle_QFNUElectricityQuery_events(websocket, msg)
         # await handle_FunnySayings_events(websocket, msg)
