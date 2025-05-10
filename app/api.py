@@ -103,9 +103,6 @@ async def send_private_msg_with_reply(websocket, user_id, content):
 # 发送群消息
 async def send_group_msg(websocket, group_id, content):
     try:
-        # 使用更短的随机字符串
-        # random_str = str(uuid.uuid4())[:8]
-        # content = f"{content}\n\n随机ID: {random_str}"
         message = {
             "action": "send_group_msg",
             "params": {"group_id": group_id, "message": content},
