@@ -95,15 +95,15 @@ async def handle_message(websocket, message):
         # 功能模块事件处理
 
         # 以下是未测试功能
-
+        await handle_GroupEntryVerification_events(websocket, msg)
         # 以下是已测试功能
-        await handle_LinuxdoReminder_events(websocket, msg)
 
+        # await handle_LinuxdoReminder_events(websocket, msg)
         # await handle_Custom_events(websocket, msg)
         # await handle_QFNUGetFreeClassrooms_events(websocket, msg)
         # await handle_QFNUElectricityQuery_events(websocket, msg)
         # await handle_FunnySayings_events(websocket, msg)
-        # await handle_GroupEntryVerification_events(websocket, msg)
+
         # await handle_QFNUEatWhat_events(websocket, msg)
         # await handle_BanWords2_events(websocket, msg)
         # await handle_ImageGenerate_events(websocket, msg)
