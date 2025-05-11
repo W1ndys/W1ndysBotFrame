@@ -72,6 +72,9 @@ from app.scripts.QFNUElectricityQuery.main import (
 from app.scripts.LinuxdoReminder.main import (
     handle_events as handle_LinuxdoReminder_events,
 )
+from app.scripts.GunRouletteGame.main import (
+    handle_events as handle_GunRouletteGame_events,
+)
 
 # 系统模块
 from app.system import handle_events as handle_System_events
@@ -95,6 +98,8 @@ async def handle_message(websocket, message):
         # 功能模块事件处理
 
         # 以下是未测试功能
+        await handle_GunRouletteGame_events(websocket, msg)
+
         await handle_GroupEntryVerification_events(websocket, msg)
         # 以下是已测试功能
 
