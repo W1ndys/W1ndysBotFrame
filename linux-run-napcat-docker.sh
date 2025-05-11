@@ -51,7 +51,6 @@ main() {
         --restart=always \
         -v "${SCRIPT_DIR}/napcat/app/.config/QQ:/app/.config/QQ" \
         -v "${SCRIPT_DIR}/napcat/app/napcat:/app/napcat" \
-        -v "/home/bot/app/scripts/:/home/bot/app/scripts/" \
         mlikiowa/napcat-docker; then
         log "Napcat Docker 容器已成功启动"
     else

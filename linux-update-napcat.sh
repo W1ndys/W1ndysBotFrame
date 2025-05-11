@@ -49,7 +49,6 @@ docker run -d --name $container_name --restart=always \
   -p 6099:6099 \
   -v ./napcat/app/.config/QQ:/app/.config/QQ \
   -v ./napcat/app/napcat/config:/app/napcat/config \
-  -v /home/bot/app/scripts/:/home/bot/app/scripts/ \
   $image_name || { log "容器启动失败"; exit 1; }
 
 log "操作完成！"
