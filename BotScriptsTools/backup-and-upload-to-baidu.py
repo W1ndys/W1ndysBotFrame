@@ -324,6 +324,168 @@ def upload_file_to_baidu(local_file_path, remote_path="/"):
         return f"上传失败：{stderr_output}", False
 
 
+def delete_old_backups(remote_dir: str, days_to_keep: int = 7):
+    """
+    删除百度网盘指定目录下超过指定天数的备份文件。
+    文件名格式需为 backup_data_and_logs_YYYY-MM-DD.tar.gz
+    """
+    logger.info(
+        f"开始检查并删除百度网盘 {remote_dir} 目录下超过 {days_to_keep} 天的备份文件..."
+    )
+
+    # 检查bypy命令是否存在
+    if not check_command_exists("bypy"):
+        logger.error("未检测到bypy命令，无法执行删除操作。")
+        return [], ["bypy命令未找到"]  # deleted_files, errors
+
+    # 步骤 1: 列出远程目录中的文件
+    list_command = f"bypy list {remote_dir}"
+    try:
+        # 增加超时以防bypy卡住
+        list_result = subprocess.run(
+            list_command,
+            shell=True,
+            capture_output=True,
+            text=True,
+            check=False,  # Check manually because bypy list can return non-zero for empty dir on some versions
+            timeout=120,  # 2 minutes timeout for listing
+        )
+
+        if list_result.returncode != 0:
+            # bypy list 可能会因目录为空或其他问题返回非零值。
+            # 检查 stderr 中是否有关键错误，如授权问题。
+            if (
+                "授权" in list_result.stderr
+                or "authorize" in list_result.stderr.lower()
+                or "Please visit" in list_result.stderr
+                or "请访问" in list_result.stderr
+            ):
+                logger.error(
+                    f"bypy需要授权，无法列出文件。请手动运行 'bypy info' 完成授权。错误: {list_result.stderr}"
+                )
+                return [], [f"bypy需要授权: {list_result.stderr}"]
+            # 如果不是授权错误，但仍然非零，可能是空目录或其他非致命问题。
+            # 如果 stderr 有内容，记录它。
+            if list_result.stderr.strip():
+                logger.warning(
+                    f"bypy list 命令返回码 {list_result.returncode}，错误信息: {list_result.stderr.strip()}"
+                )
+            # 如果 stdout 也为空，则可能是空目录或出现问题。
+            if not list_result.stdout.strip():
+                logger.info(
+                    f"bypy list 命令未返回任何文件列表或出错。标准输出为空。错误流: {list_result.stderr.strip()}"
+                )
+                # 如果 stdout 为空，则视为空目录，未找到文件
+                return [], []
+
+        logger.debug(f"bypy list 输出: \\n{list_result.stdout}")
+
+    except subprocess.TimeoutExpired:
+        logger.error(f"列出百度网盘 '{remote_dir}' 文件超时。")
+        return [], [f"列出 '{remote_dir}' 文件超时"]
+    except (
+        subprocess.CalledProcessError
+    ) as e:  # 使用 check=False 时理论上不会发生，但作为良好实践保留
+        logger.error(f"列出百度网盘 '{remote_dir}' 文件失败: {e.stderr}")
+        return [], [f"列出 '{remote_dir}' 文件失败: {e.stderr}"]
+    except Exception as e:  # 捕获列出过程中的任何其他意外错误
+        logger.error(f"列出百度网盘 '{remote_dir}' 文件时发生未知错误: {e}")
+        return [], [f"列出 '{remote_dir}' 文件时发生未知错误: {str(e)}"]
+
+    files_to_delete = []
+    # 用于查找类似 'backup_data_and_logs_2023-01-15.tar.gz' 的备份文件的正则表达式
+    backup_file_pattern = re.compile(
+        r"(backup_data_and_logs_(\d{4}-\d{2}-\d{2})\.tar\.gz)"
+    )
+    today = datetime.date.today()
+
+    # 处理列表输出的每一行
+    for line in list_result.stdout.splitlines():
+        line_stripped = line.strip()
+        # 搜索模式。bypy list 的输出中，文件名通常位于相关行部分的开头。
+        match = backup_file_pattern.search(line_stripped)
+        if match:
+            filename = match.group(
+                1
+            )  # 完整文件名，例如 backup_data_and_logs_2023-01-15.tar.gz
+            date_str = match.group(2)  # 日期部分，例如 2023-01-15
+            try:
+                file_date = datetime.datetime.strptime(date_str, "%Y-%m-%d").date()
+                age = (today - file_date).days
+                if age > days_to_keep:
+                    files_to_delete.append(filename)
+                    logger.info(
+                        f"标记文件 {filename} (日期: {date_str}, 年龄: {age} 天) 为待删除。"
+                    )
+            except ValueError:
+                logger.warning(
+                    f"文件名 {filename} 中的日期格式 '{date_str}' 无效，跳过。"
+                )
+
+    if not files_to_delete:
+        logger.info(
+            f"在 {remote_dir} 目录没有找到符合删除条件的旧备份文件 (超过 {days_to_keep} 天)。"
+        )
+        return [], []
+
+    logger.info(
+        f"找到以下 {len(files_to_delete)} 个超过 {days_to_keep} 天的备份文件，将尝试删除: {files_to_delete}"
+    )
+
+    deleted_files_summary = []
+    errors_summary = []
+
+    for filename_to_delete in files_to_delete:
+        # 构建完整的远程路径，确保如果 remote_dir 以 / 结尾时不会出现双斜杠
+        full_remote_path = f"{remote_dir.rstrip('/')}/{filename_to_delete}"
+
+        delete_command = f'bypy delete "{full_remote_path}"'  # bypy delete "remote_path" - 路径加引号更安全
+        try:
+            logger.info(f"正在删除百度网盘文件: {full_remote_path}...")
+            delete_op_result = subprocess.run(
+                delete_command,
+                shell=True,
+                capture_output=True,
+                text=True,
+                check=False,  # 手动检查返回码
+                timeout=180,  # 3 分钟删除超时
+            )
+
+            if delete_op_result.returncode == 0:
+                # bypy delete 成功时通常很安静，或向 stdout 输出最少信息
+                logger.info(
+                    f"成功删除文件 {filename_to_delete}. 标准输出: {delete_op_result.stdout.strip()}"
+                )
+                deleted_files_summary.append(filename_to_delete)
+            else:
+                # 删除失败
+                error_message = (
+                    delete_op_result.stderr.strip()
+                    or delete_op_result.stdout.strip()
+                    or "未知错误"
+                )
+                logger.error(
+                    f"删除文件 {filename_to_delete} 失败. 返回码: {delete_op_result.returncode}. 错误: {error_message}"
+                )
+                errors_summary.append(
+                    f"删除 {filename_to_delete} 失败: {error_message}"
+                )
+
+        except subprocess.TimeoutExpired:
+            logger.error(f"删除文件 {filename_to_delete} 超时。")
+            errors_summary.append(f"删除 {filename_to_delete} 超时")
+        except Exception as e:  # 捕获删除过程中的任何其他意外错误
+            logger.error(f"删除文件 {filename_to_delete} 时发生未知错误: {e}")
+            errors_summary.append(f"删除 {filename_to_delete} 时发生未知错误: {str(e)}")
+
+    if deleted_files_summary:
+        logger.info(f"成功删除 {len(deleted_files_summary)} 个旧备份文件。")
+    if errors_summary:
+        logger.error(f"删除旧备份文件过程中发生 {len(errors_summary)} 个错误。")
+
+    return deleted_files_summary, errors_summary
+
+
 def backup_data_and_logs():
     """备份数据和日志"""
     # 进入/home/bot/app目录
@@ -369,31 +531,71 @@ def main():
     # 步骤2: 上传到百度网盘
     remote_dir = "/W1ndysBot/"
     file_name = os.path.basename(archive_path)
-    remote_path = f"{remote_dir}{file_name}"
+    remote_file_path = f"{remote_dir}{file_name}"  # 构造完整的远程文件路径用于上传
 
-    result_message, success = upload_file_to_baidu(archive_path, remote_path)
+    result_message, success = upload_file_to_baidu(
+        archive_path, remote_file_path
+    )  # 传递完整远程文件路径
 
     # 检查百度网盘上是否有该文件 (通过列出目录来验证)
-    verify_command = f"bypy list {remote_dir}"
-    try:
-        verify_result = subprocess.run(
-            verify_command, shell=True, capture_output=True, text=True, timeout=30
-        )
+    # 此验证步骤在 upload_file_to_baidu 内部的成功判断之外，作为额外的确认
+    if success:  # 仅当 upload_file_to_baidu 报告某种形式的成功时才进行验证
+        verify_command = f"bypy list {remote_dir}"
+        try:
+            verify_result = subprocess.run(
+                verify_command, shell=True, capture_output=True, text=True, timeout=30
+            )
 
-        # 如果文件名出现在列表中，则确认上传成功
-        if file_name in verify_result.stdout:
-            success = True
-            result_message = f"文件已成功上传到百度网盘并已验证存在\n{result_message}"
-            logger.info(f"已验证文件 {file_name} 存在于百度网盘")
-    except Exception as e:
-        logger.warning(f"验证文件是否上传成功时出错: {e}")
-        # 继续处理，不改变原有的成功标志
+            # 如果文件名出现在列表中，则确认上传成功
+            if file_name in verify_result.stdout:
+                # success 保持 True
+                result_message = (
+                    f"文件已成功上传到百度网盘并已验证存在\\n{result_message}"
+                )
+                logger.info(f"已验证文件 {file_name} 存在于百度网盘")
+            # else:
+            # 如果 upload_file_to_baidu 认为成功，但验证未找到文件，这里可以考虑是否更改 success 状态
+            # 当前逻辑：验证失败不改变 success 状态，仅记录警告
+            # logger.warning(f"上传后验证失败：文件 {file_name} 未在 {remote_dir} 找到。")
+        except Exception as e:
+            logger.warning(f"验证文件是否上传成功时出错: {e}")
+            # 继续处理，不改变原有的成功标志
+
+    # 步骤 2.5: 删除7天前的旧备份
+    deleted_files_report = ""
+    if success:  # 只有在当前备份成功上传后才尝试删除旧备份
+        logger.info("当前备份上传成功，开始清理旧备份...")
+        # 默认删除7天前的备份
+        deleted_files, delete_errors = delete_old_backups(remote_dir, days_to_keep=7)
+
+        if deleted_files:
+            deleted_files_report += (
+                f"\n已成功删除以下 {len(deleted_files)} 个旧备份文件:\\n"
+                + "\n".join(deleted_files)
+            )
+        if delete_errors:
+            deleted_files_report += (
+                f"\n删除旧备份文件时遇到 {len(delete_errors)} 个错误:\\n"
+                + "\n".join(delete_errors)
+            )
+        if not deleted_files and not delete_errors:
+            # 如果没有文件被删除，也没有错误，可以添加一条信息
+            deleted_files_report += (
+                "\n没有找到需要删除的旧备份文件，或清理过程中未发生错误。"
+            )
+        elif not deleted_files and delete_errors:
+            # 如果没有文件被删除，但有错误（例如列出文件失败）
+            deleted_files_report += "\n未删除任何旧备份文件，清理过程中发生错误。"
 
     # 步骤3: 发送飞书通知
     if success:
+        feishu_title = f"W1ndysBot备份数据上传百度网盘成功"
+        feishu_content = f"文件名: {file_name}\\n备份上传状态: {result_message}"
+        feishu_content += deleted_files_report  # 添加旧备份删除信息
+
         send_feishu_notification(
-            f"W1ndysBot备份数据上传百度网盘成功",
-            f"文件名: {file_name}\n{result_message}",
+            feishu_title,
+            feishu_content,
         )
         # 删除本地文件
         try:
@@ -404,7 +606,7 @@ def main():
     else:
         send_feishu_notification(
             "W1ndysBot备份数据上传百度网盘失败",
-            f"文件名: {file_name}\n失败原因: {result_message}",
+            f"文件名: {file_name}\\n失败原因: {result_message}",
         )
         logger.error(f"上传失败，保留本地文件: {archive_path}")
 
