@@ -89,10 +89,6 @@
 	path = app/scripts/MuteWheel
 	url = git@github.com:W1ndysBot/MuteWheel.git
 	branch = main
-[submodule "app/scripts/GithubCard"]
-	path = app/scripts/GithubCard
-	url = git@github.com:W1ndysBot/GithubCard.git
-	branch = main
 [submodule "app/scripts/QFNUGetFreeClassrooms"]
 	path = app/scripts/QFNUGetFreeClassrooms
 	url = git@github.com:W1ndysBot/QFNUGetFreeClassrooms.git
