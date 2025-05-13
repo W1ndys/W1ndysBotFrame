@@ -12,7 +12,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.core.online_detect import Online_detect_manager
 
 # 统一从各模块导入事件处理器
-from app.scripts.ImageGenerate.main import handle_events as handle_ImageGenerate_events
 from app.scripts.SendAll.main import handle_events as handle_SendAll_events
 from app.scripts.GroupManager.main import handle_events as handle_GroupManager_events
 from app.scripts.Crypto.main import handle_events as handle_Crypto_events
@@ -24,7 +23,6 @@ from app.scripts.WelcomeFarewell.main import (
     handle_events as handle_WelcomeFarewell_events,
 )
 from app.scripts.InviteChain.main import handle_events as handle_InviteChain_events
-from app.scripts.LockGroupCard.main import handle_events as handle_LockGroupCard_events
 from app.scripts.SoftBan.main import handle_events as handle_SoftBan_events
 from app.scripts.Custom.main import handle_events as handle_Custom_events
 from app.scripts.TimeAwareGreetings.main import (
@@ -34,12 +32,8 @@ from app.scripts.TimeAwareGreetings.main import (
 from app.scripts.QFNUBustExamClassroomFind.main import (
     handle_events as handle_QFNUBustExamClassroomFind_events,
 )
-from app.scripts.QFNUClassRegistrationCheck.main import (
-    handle_events as handle_QFNUClassRegistrationCheck_events,
-)
-from app.scripts.GetIPInfo.main import handle_events as handle_GetIPInfo_events
+
 from app.scripts.CET4.main import handle_events as handle_CET4_events
-from app.scripts.GithubCard.main import handle_events as handle_GithubCard_events
 from app.scripts.BilibiliPush.main import handle_events as handle_BilibiliPush_events
 from app.scripts.QRCodeInspector.main import (
     handle_events as handle_QRCodeInspector_events,
@@ -60,7 +54,6 @@ from app.scripts.GroupEntryVerification.main import (
 from app.scripts.QFNUNoticeMonitor.main import (
     handle_events as handle_QFNUNoticeMonitor_events,
 )
-from app.scripts.SayBan.main import handle_events as handle_SayBan_events
 from app.scripts.AnswerBook.main import handle_events as handle_AnswerBook_events
 from app.scripts.FunnySayings.main import handle_events as handle_FunnySayings_events
 from app.scripts.QFNUElectricityQuery.main import (
@@ -108,7 +101,6 @@ async def handle_message(websocket, message):
 
         await handle_QFNUEatWhat_events(websocket, msg)
         await handle_BanWords2_events(websocket, msg)
-        await handle_ImageGenerate_events(websocket, msg)
         await handle_SendAll_events(websocket, msg)
         await handle_GroupManager_events(websocket, msg)
         await handle_Crypto_events(websocket, msg)
@@ -118,22 +110,17 @@ async def handle_message(websocket, message):
         await handle_Blacklist_events(websocket, msg)
         await handle_WelcomeFarewell_events(websocket, msg)
         await handle_InviteChain_events(websocket, msg)
-        await handle_LockGroupCard_events(websocket, msg)
         await handle_SoftBan_events(websocket, msg)
 
         await handle_TimeAwareGreetings_events(websocket, msg)
         await handle_QFNUBustExamClassroomFind_events(websocket, msg)
-        await handle_QFNUClassRegistrationCheck_events(websocket, msg)
-        await handle_GetIPInfo_events(websocket, msg)
         await handle_CET4_events(websocket, msg)
-        await handle_GithubCard_events(websocket, msg)
         await handle_BilibiliPush_events(websocket, msg)
         await handle_QRCodeInspector_events(websocket, msg)
         await handle_TitleSelfService_events(websocket, msg)
         await handle_MuteWheel_events(websocket, msg)
         await handle_LLM_events(websocket, msg)
         await handle_QFNUNoticeMonitor_events(websocket, msg)
-        await handle_SayBan_events(websocket, msg)
         await handle_AnswerBook_events(websocket, msg)
     except Exception as e:
         logging.error(f"处理ws消息的逻辑错误: {e}")
