@@ -14,7 +14,8 @@ print_step() {
 }
 
 # 提示用户输入
-read -p "请输入要删除的子模块路径 (例如: app/scripts/LinkGroup): " SUBMODULE_PATH
+read -p "请输入要删除的子模块名称 (例如: LinkGroup): " MODULE_NAME
+SUBMODULE_PATH="app/scripts/$MODULE_NAME"
 
 # 检查输入是否为空
 if [ -z "$SUBMODULE_PATH" ]; then
