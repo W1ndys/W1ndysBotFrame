@@ -44,16 +44,13 @@ def is_authorized(role, user_id):
         return False
 
 
-# 发送私聊消息，解析cq码
-async def send_private_msg(websocket, user_id, content):
+# 发送私聊消息
+async def send_private_msg(websocket, user_id, content, note=None):
     try:
-        # 使用更短的随机字符串
-        # random_str = str(uuid.uuid4())[:8]
-        # content = f"{content}\n\n随机ID: {random_str}"
         message = {
             "action": "send_private_msg",
             "params": {"user_id": user_id, "message": content},
-            "echo": "send_private_msg",
+            "echo": f"send_private_msg_{note}",
         }
         await websocket.send(json.dumps(message))
         logging.info(f"[API]已发送消息到用户 {user_id}")
@@ -62,51 +59,13 @@ async def send_private_msg(websocket, user_id, content):
         logging.error(f"[API]发送私聊消息失败: {e}")
 
 
-# 发送私聊消息，不解析cq码
-async def send_private_msg_no_cq(websocket, user_id, content, auto_escape=True):
-    try:
-        # 使用更短的随机字符串
-        # random_str = str(uuid.uuid4())[:8]
-        # content = f"{content}\n\n随机ID: {random_str}"
-        message = {
-            "action": "send_private_msg",
-            "params": {
-                "user_id": user_id,
-                "message": content,
-                "auto_escape": auto_escape,
-            },
-            "echo": "send_private_msg_no_cq",
-        }
-        await websocket.send(json.dumps(message))
-        logging.info(f"[API]已发送消息到用户 {user_id}")
-    except Exception as e:
-        logging.error(f"[API]发送私聊消息失败: {e}")
-
-
-# 发送私聊消息，并获取消息ID
-async def send_private_msg_with_reply(websocket, user_id, content):
-    try:
-        # 使用更短的随机字符串
-        # random_str = str(uuid.uuid4())[:8]
-        # content = f"{content}\n\n随机ID: {random_str}"
-        message = {
-            "action": "send_private_msg",
-            "params": {"user_id": user_id, "message": content},
-            "echo": "send_private_msg_with_reply",
-        }
-        await websocket.send(json.dumps(message))
-        logging.info(f"[API]已发送消息到用户 {user_id}")
-    except Exception as e:
-        logging.error(f"[API]发送私聊消息失败: {e}")
-
-
 # 发送群消息
-async def send_group_msg(websocket, group_id, content):
+async def send_group_msg(websocket, group_id, content, note=None):
     try:
         message = {
             "action": "send_group_msg",
             "params": {"group_id": group_id, "message": content},
-            "echo": f"send_group_msg_{content[0:100]}",
+            "echo": f"send_group_msg_{note}",
         }
         await websocket.send(json.dumps(message))
         logging.info(f"[API]已发送群消息到群 {group_id}")
