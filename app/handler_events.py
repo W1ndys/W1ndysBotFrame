@@ -98,7 +98,7 @@ async def handle_message(websocket, message):
         # await handle_QFNUEatWhat_events(websocket, msg)
         # await handle_BanWords2_events(websocket, msg)
         # await handle_SendAll_events(websocket, msg)
-        # await handle_GroupManager_events(websocket, msg)
+        await handle_GroupManager_events(websocket, msg)
         # await handle_Crypto_events(websocket, msg)
         # await handle_QASystem_events(websocket, msg)
         # await handle_ClassTable_events(websocket, msg)
