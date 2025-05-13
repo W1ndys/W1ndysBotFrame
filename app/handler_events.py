@@ -31,7 +31,6 @@ from app.scripts.TimeAwareGreetings.main import (
     handle_events as handle_TimeAwareGreetings_events,
 )
 
-from app.scripts.NoAddOne.main import handle_events as handle_NoAddOne_events
 from app.scripts.QFNUBustExamClassroomFind.main import (
     handle_events as handle_QFNUBustExamClassroomFind_events,
 )
@@ -62,7 +61,6 @@ from app.scripts.GroupEntryVerification.main import (
 from app.scripts.QFNUNoticeMonitor.main import (
     handle_events as handle_QFNUNoticeMonitor_events,
 )
-from app.scripts.Whois.main import handle_events as handle_Whois_events
 from app.scripts.SayBan.main import handle_events as handle_SayBan_events
 from app.scripts.AnswerBook.main import handle_events as handle_AnswerBook_events
 from app.scripts.FunnySayings.main import handle_events as handle_FunnySayings_events
@@ -125,7 +123,6 @@ async def handle_message(websocket, message):
         # await handle_SoftBan_events(websocket, msg)
 
         # await handle_TimeAwareGreetings_events(websocket, msg)
-        # await handle_NoAddOne_events(websocket, msg)
         # await handle_QFNUBustExamClassroomFind_events(websocket, msg)
         # await handle_QFNUClassRegistrationCheck_events(websocket, msg)
         # await handle_GetIPInfo_events(websocket, msg)
@@ -139,7 +136,6 @@ async def handle_message(websocket, message):
         # await handle_MuteWheel_events(websocket, msg)
         # await handle_LLM_events(websocket, msg)
         # await handle_QFNUNoticeMonitor_events(websocket, msg)
-        # await handle_Whois_events(websocket, msg)
         # await handle_SayBan_events(websocket, msg)
         # await handle_AnswerBook_events(websocket, msg)
     except Exception as e:
