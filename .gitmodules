@@ -85,10 +85,6 @@
 	path = app/scripts/BilibiliPush
 	url = git@github.com:W1ndysBot/BilibiliPush
 	branch = main
-[submodule "app/scripts/GroupLink"]
-	path = app/scripts/GroupLink
-	url = git@github.com:W1ndysBot/GroupLink.git
-	branch = main
 [submodule "app/scripts/QRCodeInspector"]
 	path = app/scripts/QRCodeInspector
 	url = git@github.com:W1ndysBot/QRCodeInspector.git
