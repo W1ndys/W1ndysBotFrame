@@ -57,10 +57,6 @@
 	path = app/scripts/CET4
 	url = git@github.com:W1ndysBot/CET4.git
 	branch = main
-[submodule "app/scripts/QFNUBustExamClassroomFind"]
-	path = app/scripts/QFNUBustExamClassroomFind
-	url = git@github.com:W1ndysBot/QFNUBustExamClassroomFind
-	branch = main
 [submodule "app/scripts/BilibiliAnalysis"]
 	path = app/scripts/BilibiliAnalysis
 	url = git@github.com:W1ndysBot/BilibiliAnalysis
