@@ -121,3 +121,7 @@
 	path = app/scripts/GunRouletteGame
 	url = git@github.com:W1ndysBot/GunRouletteGame.git
 	branch = main
+[submodule "app/scripts/HaiXian"]
+	path = app/scripts/HaiXian
+	url = git@github.com:W1ndysBot/HaiXian.git
+	branch = main
