@@ -69,10 +69,6 @@
 	path = app/scripts/GetIPInfo
 	url = git@github.com:W1ndysBot/GetIPInfo.git
 	branch = main
-[submodule "app/scripts/QFNUClassRegistrationCheck"]
-	path = app/scripts/QFNUClassRegistrationCheck
-	url = git@github.com:W1ndysBot/QFNUClassRegistrationCheck.git
-	branch = main
 [submodule "app/scripts/BilibiliAnalysis"]
 	path = app/scripts/BilibiliAnalysis
 	url = git@github.com:W1ndysBot/BilibiliAnalysis
