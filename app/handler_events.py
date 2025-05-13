@@ -41,7 +41,6 @@ from app.scripts.GetIPInfo.main import handle_events as handle_GetIPInfo_events
 from app.scripts.CET4.main import handle_events as handle_CET4_events
 from app.scripts.GithubCard.main import handle_events as handle_GithubCard_events
 from app.scripts.BilibiliPush.main import handle_events as handle_BilibiliPush_events
-from app.scripts.GroupLink.main import handle_events as handle_GroupLink_events
 from app.scripts.QRCodeInspector.main import (
     handle_events as handle_QRCodeInspector_events,
 )
@@ -129,8 +128,6 @@ async def handle_message(websocket, message):
         await handle_CET4_events(websocket, msg)
         await handle_GithubCard_events(websocket, msg)
         await handle_BilibiliPush_events(websocket, msg)
-
-        await handle_GroupLink_events(websocket, msg)
         await handle_QRCodeInspector_events(websocket, msg)
         await handle_TitleSelfService_events(websocket, msg)
         await handle_MuteWheel_events(websocket, msg)

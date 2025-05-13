@@ -46,10 +46,6 @@
 	path = app/scripts/KeywordsReply
 	url = git@github.com:W1ndysBot/KeywordsReply.git
 	branch = main
-[submodule "app/scripts/ImageGenerate"]
-	path = app/scripts/ImageGenerate
-	url = git@github.com:W1ndysBot/ImageGenerate
-	branch = main
 [submodule "app/scripts/ClassTable"]
 	path = app/scripts/ClassTable
 	url = git@github.com:W1ndysBot/ClassTable.git
