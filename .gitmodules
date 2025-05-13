@@ -34,10 +34,6 @@
 	path = app/scripts/Custom
 	url = git@github.com:W1ndysBot/Custom
 	branch = main
-[submodule "app/scripts/LockGroupCard"]
-	path = app/scripts/LockGroupCard
-	url = git@github.com:W1ndysBot/LockGroupCard.git
-	branch = main
 [submodule "app/scripts/SendAll"]
 	path = app/scripts/SendAll
 	url = git@github.com:W1ndysBot/SendAll.git
