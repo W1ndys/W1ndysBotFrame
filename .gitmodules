@@ -50,9 +50,6 @@
 	path = app/scripts/TimeAwareGreetings
 	url = git@github.com:W1ndysBot/TimeAwareGreetings.git
 	branch = main
-[submodule "app/scripts/BanWords2"]
-	path = app/scripts/BanWords2
-	url = git@github.com:W1ndysBot/BanWords2.git
 [submodule "app/scripts/BilibiliAnalysis"]
 	path = app/scripts/BilibiliAnalysis
 	url = git@github.com:W1ndysBot/BilibiliAnalysis
