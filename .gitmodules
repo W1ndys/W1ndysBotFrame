@@ -53,10 +53,6 @@
 [submodule "app/scripts/BanWords2"]
 	path = app/scripts/BanWords2
 	url = git@github.com:W1ndysBot/BanWords2.git
-[submodule "app/scripts/CET4"]
-	path = app/scripts/CET4
-	url = git@github.com:W1ndysBot/CET4.git
-	branch = main
 [submodule "app/scripts/BilibiliAnalysis"]
 	path = app/scripts/BilibiliAnalysis
 	url = git@github.com:W1ndysBot/BilibiliAnalysis
