@@ -61,6 +61,7 @@ from app.scripts.LinuxdoReminder.main import (
 from app.scripts.GunRouletteGame.main import (
     handle_events as handle_GunRouletteGame_events,
 )
+from app.scripts.HaiXian.main import handle_events as handle_HaiXian_events
 
 # 系统模块
 from app.system import handle_events as handle_System_events
@@ -94,7 +95,7 @@ async def handle_message(websocket, message):
         await handle_QFNUGetFreeClassrooms_events(websocket, msg)
         await handle_QFNUElectricityQuery_events(websocket, msg)
         await handle_FunnySayings_events(websocket, msg)
-
+        await handle_HaiXian_events(websocket, msg)
         await handle_QFNUEatWhat_events(websocket, msg)
         await handle_BanWords2_events(websocket, msg)
         await handle_SendAll_events(websocket, msg)
