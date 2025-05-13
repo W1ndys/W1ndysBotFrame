@@ -29,7 +29,7 @@ from app.scripts.TimeAwareGreetings.main import (
     handle_events as handle_TimeAwareGreetings_events,
 )
 
-from app.scripts.CET4.main import handle_events as handle_CET4_events
+
 from app.scripts.BilibiliPush.main import handle_events as handle_BilibiliPush_events
 from app.scripts.QRCodeInspector.main import (
     handle_events as handle_QRCodeInspector_events,
@@ -38,7 +38,7 @@ from app.scripts.TitleSelfService.main import (
     handle_events as handle_TitleSelfService_events,
 )
 from app.scripts.MuteWheel.main import handle_events as handle_MuteWheel_events
-from app.scripts.BanWords2.main import handle_events as handle_BanWords2_events
+
 from app.scripts.LLM.main import handle_events as handle_LLM_events
 from app.scripts.QFNUEatWhat.main import handle_events as handle_QFNUEatWhat_events
 from app.scripts.QFNUGetFreeClassrooms.main import (
@@ -95,7 +95,6 @@ async def handle_message(websocket, message):
         await handle_FunnySayings_events(websocket, msg)
         await handle_HaiXian_events(websocket, msg)
         await handle_QFNUEatWhat_events(websocket, msg)
-        await handle_BanWords2_events(websocket, msg)
         await handle_SendAll_events(websocket, msg)
         await handle_GroupManager_events(websocket, msg)
         await handle_Crypto_events(websocket, msg)
@@ -107,7 +106,6 @@ async def handle_message(websocket, message):
         await handle_InviteChain_events(websocket, msg)
         await handle_SoftBan_events(websocket, msg)
         await handle_TimeAwareGreetings_events(websocket, msg)
-        await handle_CET4_events(websocket, msg)
         await handle_BilibiliPush_events(websocket, msg)
         await handle_QRCodeInspector_events(websocket, msg)
         await handle_TitleSelfService_events(websocket, msg)
