@@ -58,10 +58,6 @@
 	path = app/scripts/ClassTable
 	url = git@github.com:W1ndysBot/ClassTable.git
 	branch = main
-[submodule "app/scripts/PokePal"]
-	path = app/scripts/PokePal
-	url = git@github.com:W1ndysBot/PokePal.git
-	branch = main
 [submodule "app/scripts/TimeAwareGreetings"]
 	path = app/scripts/TimeAwareGreetings
 	url = git@github.com:W1ndysBot/TimeAwareGreetings.git
