@@ -29,10 +29,6 @@ from app.scripts.TimeAwareGreetings.main import (
     handle_events as handle_TimeAwareGreetings_events,
 )
 
-from app.scripts.QFNUBustExamClassroomFind.main import (
-    handle_events as handle_QFNUBustExamClassroomFind_events,
-)
-
 from app.scripts.CET4.main import handle_events as handle_CET4_events
 from app.scripts.BilibiliPush.main import handle_events as handle_BilibiliPush_events
 from app.scripts.QRCodeInspector.main import (
@@ -113,7 +109,6 @@ async def handle_message(websocket, message):
         await handle_SoftBan_events(websocket, msg)
 
         await handle_TimeAwareGreetings_events(websocket, msg)
-        await handle_QFNUBustExamClassroomFind_events(websocket, msg)
         await handle_CET4_events(websocket, msg)
         await handle_BilibiliPush_events(websocket, msg)
         await handle_QRCodeInspector_events(websocket, msg)
