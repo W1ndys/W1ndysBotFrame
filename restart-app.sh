@@ -26,8 +26,8 @@ fi
 # 激活虚拟环境
 . "../venv/bin/activate"
 
-# 启动Python程序
-nohup python main.py >app.log 2>&1 &
+# 启动Python程序并捕获错误
+nohup python main.py >app.log 2> >(tee -a app.log) &
 
 # 保存新的PID到文件
 echo $! >app.pid
