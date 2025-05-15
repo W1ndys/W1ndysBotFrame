@@ -378,7 +378,7 @@ def delete_old_backups(remote_dir: str, days_to_keep: int = 7):
                 # 如果 stdout 为空，则视为空目录，未找到文件
                 return [], []
 
-        logger.debug(f"bypy list 输出: \\n{list_result.stdout}")
+        logger.debug(f"bypy list 输出: \n{list_result.stdout}")
 
     except subprocess.TimeoutExpired:
         logger.error(f"列出百度网盘 '{remote_dir}' 文件超时。")
@@ -550,7 +550,7 @@ def main():
             if file_name in verify_result.stdout:
                 # success 保持 True
                 result_message = (
-                    f"文件已成功上传到百度网盘并已验证存在\\n{result_message}"
+                    f"文件已成功上传到百度网盘并已验证存在\n{result_message}"
                 )
                 logger.info(f"已验证文件 {file_name} 存在于百度网盘")
             # else:
@@ -570,12 +570,12 @@ def main():
 
         if deleted_files:
             deleted_files_report += (
-                f"\n已成功删除以下 {len(deleted_files)} 个旧备份文件:\\n"
+                f"\n已成功删除以下 {len(deleted_files)} 个旧备份文件:\n"
                 + "\n".join(deleted_files)
             )
         if delete_errors:
             deleted_files_report += (
-                f"\n删除旧备份文件时遇到 {len(delete_errors)} 个错误:\\n"
+                f"\n删除旧备份文件时遇到 {len(delete_errors)} 个错误:\n"
                 + "\n".join(delete_errors)
             )
         if not deleted_files and not delete_errors:
@@ -590,7 +590,7 @@ def main():
     # 步骤3: 发送飞书通知
     if success:
         feishu_title = f"W1ndysBot备份数据上传百度网盘成功"
-        feishu_content = f"文件名: {file_name}\\n备份上传状态: {result_message}"
+        feishu_content = f"文件名: {file_name}\n备份上传状态: {result_message}"
         feishu_content += deleted_files_report  # 添加旧备份删除信息
 
         send_feishu_notification(
@@ -606,7 +606,7 @@ def main():
     else:
         send_feishu_notification(
             "W1ndysBot备份数据上传百度网盘失败",
-            f"文件名: {file_name}\\n失败原因: {result_message}",
+            f"文件名: {file_name}\n失败原因: {result_message}",
         )
         logger.error(f"上传失败，保留本地文件: {archive_path}")
 
