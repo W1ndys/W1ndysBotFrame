@@ -98,10 +98,6 @@
 	path = app/scripts/QFNUElectricityQuery
 	url = git@github.com:W1ndysBot/QFNUElectricityQuery.git
 	branch = main
-[submodule "app/scripts/LinuxdoReminder"]
-	path = app/scripts/LinuxdoReminder
-	url = git@github.com:W1ndysBot/LinuxdoReminder.git
-	branch = main
 [submodule "app/scripts/GunRouletteGame"]
 	path = app/scripts/GunRouletteGame
 	url = git@github.com:W1ndysBot/GunRouletteGame.git
