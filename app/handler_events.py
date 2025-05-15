@@ -12,7 +12,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.core.online_detect import Online_detect_manager
 
 # 统一从各模块导入事件处理器
-from app.scripts.SendAll.main import handle_events as handle_SendAll_events
 from app.scripts.GroupManager.main import handle_events as handle_GroupManager_events
 from app.scripts.Crypto.main import handle_events as handle_Crypto_events
 from app.scripts.QASystem.main import handle_events as handle_QASystem_events
@@ -95,7 +94,6 @@ async def handle_message(websocket, message):
         await handle_FunnySayings_events(websocket, msg)
         await handle_HaiXian_events(websocket, msg)
         await handle_QFNUEatWhat_events(websocket, msg)
-        await handle_SendAll_events(websocket, msg)
         await handle_GroupManager_events(websocket, msg)
         await handle_Crypto_events(websocket, msg)
         await handle_QASystem_events(websocket, msg)
