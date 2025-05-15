@@ -14,7 +14,6 @@ from app.core.online_detect import Online_detect_manager
 # 统一从各模块导入事件处理器
 from app.scripts.GroupManager.main import handle_events as handle_GroupManager_events
 from app.scripts.Crypto.main import handle_events as handle_Crypto_events
-from app.scripts.QASystem.main import handle_events as handle_QASystem_events
 from app.scripts.ClassTable.main import handle_events as handle_ClassTable_events
 from app.scripts.KeywordsReply.main import handle_events as handle_KeywordsReply_events
 from app.scripts.BlacklistSystem.main import handle_events as handle_Blacklist_events
@@ -89,7 +88,6 @@ async def handle_message(websocket, message):
         await handle_QFNUEatWhat_events(websocket, msg)
         await handle_GroupManager_events(websocket, msg)
         await handle_Crypto_events(websocket, msg)
-        await handle_QASystem_events(websocket, msg)
         await handle_ClassTable_events(websocket, msg)
         await handle_KeywordsReply_events(websocket, msg)
         await handle_Blacklist_events(websocket, msg)
