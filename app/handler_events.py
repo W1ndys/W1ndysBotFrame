@@ -54,9 +54,7 @@ from app.scripts.FunnySayings.main import handle_events as handle_FunnySayings_e
 from app.scripts.QFNUElectricityQuery.main import (
     handle_events as handle_QFNUElectricityQuery_events,
 )
-from app.scripts.LinuxdoReminder.main import (
-    handle_events as handle_LinuxdoReminder_events,
-)
+
 from app.scripts.GunRouletteGame.main import (
     handle_events as handle_GunRouletteGame_events,
 )
@@ -81,13 +79,8 @@ async def handle_message(websocket, message):
         # 在线监测模块
         await Online_detect_manager.handle_events(websocket, msg)
 
-        # 功能模块事件处理
-
-        # 以下是未测试功能
-
         await handle_GroupEntryVerification_events(websocket, msg)
         await handle_GunRouletteGame_events(websocket, msg)
-        await handle_LinuxdoReminder_events(websocket, msg)
         await handle_Custom_events(websocket, msg)
         await handle_QFNUGetFreeClassrooms_events(websocket, msg)
         await handle_QFNUElectricityQuery_events(websocket, msg)
