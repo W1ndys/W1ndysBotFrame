@@ -29,9 +29,7 @@ from app.scripts.TimeAwareGreetings.main import (
 
 
 from app.scripts.BilibiliPush.main import handle_events as handle_BilibiliPush_events
-from app.scripts.QRCodeInspector.main import (
-    handle_events as handle_QRCodeInspector_events,
-)
+
 from app.scripts.TitleSelfService.main import (
     handle_events as handle_TitleSelfService_events,
 )
@@ -96,7 +94,6 @@ async def handle_message(websocket, message):
         await handle_SoftBan_events(websocket, msg)
         await handle_TimeAwareGreetings_events(websocket, msg)
         await handle_BilibiliPush_events(websocket, msg)
-        await handle_QRCodeInspector_events(websocket, msg)
         await handle_TitleSelfService_events(websocket, msg)
         await handle_MuteWheel_events(websocket, msg)
         await handle_LLM_events(websocket, msg)
