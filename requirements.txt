@@ -1,61 +1,11 @@
-aiohappyeyeballs
-aiohttp
-aiosignal
-annotated-types
-anyio
-attrs
-beautifulsoup4
-certifi
-charset-normalizer
-colorama
-coloredlogs
-colorlog
-contourpy
-cycler
-ddddocr
-distro
-flatbuffers
-fonttools
-frozenlist
-h11
-httpcore
-httpx
-humanfriendly
-idna
-jieba
-jiter
-kiwisolver
-Levenshtein
-matplotlib
-mpmath
-multidict
-numpy
-onnxruntime
-openai
-opencv-contrib-python
-opencv-python
-opencv-python-headless
-packaging
-pillow
-propcache
-protobuf
-pydantic
-pydantic_core
-pyparsing
-pyreadline3
-python-dateutil
-python-Levenshtein
-pyzbar
-RapidFuzz
-requests
-six
-sniffio
-soupsieve
-sympy
-tqdm
-typing_extensions
-urllib3
-websockets
-wordcloud
-yarl
-python-dotenv
+# 底层依赖
+websockets  # 必装依赖，用于处理websocket连接
+requests  # 必装依赖，用于处理同步http请求，后续可以替换为异步，主要用于飞书通知API
+aiohttp # 必装依赖，用于处理异步http请求
+python-dotenv # 用于处理环境变量
+colorlog # 用于处理日志
+
+# 模块需要的依赖
+bs4 # 用于处理html解析（用于处理B站推送消息）
+pillow # 用于处理图片
+ddddocr # 用于处理图片中的文字识别，QFNU查空教室使用
