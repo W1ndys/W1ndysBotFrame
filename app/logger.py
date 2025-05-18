@@ -7,7 +7,7 @@ from datetime import datetime, timezone, timedelta
 from logging.handlers import RotatingFileHandler
 
 
-def setup_logger(name=None, log_file=None, level=logging.DEBUG):
+def setup_logger(name=None, log_file=None, level=logging.INFO):
     """
     设置日志记录器
 
