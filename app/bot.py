@@ -2,7 +2,6 @@
 
 import logging
 import asyncio
-import json
 import websockets
 from config import *
 
