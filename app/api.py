@@ -54,7 +54,6 @@ async def send_private_msg(websocket, user_id, content, note=None):
         }
         await websocket.send(json.dumps(message))
         logging.info(f"[API]已发送消息到用户 {user_id}")
-        await asyncio.sleep(0.5)
     except Exception as e:
         logging.error(f"[API]发送私聊消息失败: {e}")
 
@@ -69,7 +68,6 @@ async def send_group_msg(websocket, group_id, content, note=None):
         }
         await websocket.send(json.dumps(message))
         logging.info(f"[API]已发送群消息到群 {group_id}")
-        await asyncio.sleep(0.5)
     except Exception as e:
         logging.error(f"[API]发送群消息失败: {e}")
 
