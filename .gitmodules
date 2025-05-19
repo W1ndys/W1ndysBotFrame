@@ -30,10 +30,6 @@
 	path = app/scripts/Custom
 	url = git@github.com:W1ndysBot/Custom
 	branch = main
-[submodule "app/scripts/KeywordsReply"]
-	path = app/scripts/KeywordsReply
-	url = git@github.com:W1ndysBot/KeywordsReply.git
-	branch = main
 [submodule "app/scripts/ClassTable"]
 	path = app/scripts/ClassTable
 	url = git@github.com:W1ndysBot/ClassTable.git
