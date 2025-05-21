@@ -38,10 +38,6 @@
 	path = app/scripts/TimeAwareGreetings
 	url = git@github.com:W1ndysBot/TimeAwareGreetings.git
 	branch = main
-[submodule "app/scripts/BilibiliPush"]
-	path = app/scripts/BilibiliPush
-	url = git@github.com:W1ndysBot/BilibiliPush
-	branch = main
 [submodule "app/scripts/WelcomeFarewell"]
 	path = app/scripts/WelcomeFarewell
 	url = git@github.com:W1ndysBot/WelcomeFarewell.git
