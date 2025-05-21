@@ -65,6 +65,10 @@ graph TD
 - **消息框架**: [NapCatQQ](https://napneko.github.io/)
 - **机器人 API**: [NapCatQQ API](https://napcat.apifox.cn)
 
+## 🌟 星标历史
+
+[![Star History Chart](https://api.star-history.com/svg?repos=W1ndys/W1ndysBot&type=Date)](https://www.star-history.com/#W1ndys/W1ndysBot&Date)
+
 ## 📄 开源协议
 
 本项目采用 [GPL-3.0](./LICENSE) 协议开源。
