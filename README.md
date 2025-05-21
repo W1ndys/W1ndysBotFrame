@@ -6,7 +6,7 @@
 
 基于 Python 和 [NapCatQQ](https://napneko.github.io/) 的 QQ 机器人实现。W1ndys 开发的 QQ 机器人，励志成为功能丰富，使用方便的 QQ 机器人。
 
-**🔄 本项目的底层框架正在[W1ndysBotFrame](https://github.com/W1ndysBot/W1ndysBotFrame)重构，目前已完成 90%，有时间会完善，代码更易扩展、更易维护、复用性更高。完成后将会迁移到本仓库，并删除 W1ndysBotFrame 仓库**
+**🔄 本项目的底层框架正在[W1ndysBotFrame](https://github.com/W1ndysBot/W1ndysBotFrame)重构，目前已完成 90%，有时间会完善，代码更易扩展、更易维护、复用性更高。完成后本项目将会使用新的底层框架重构，✨ 有需要的话可以给这个项目点个 ⭐ star 支持一下。**
 
 该项目主要是作者个人使用，所以没有进行过多的封装，只是简单的实现了一些功能。并且作者个人水平有限，有过多的高度自定义内容，所以可能存在一些问题，欢迎大家提出建议和意见。
 
