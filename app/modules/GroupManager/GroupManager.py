@@ -70,7 +70,7 @@ class GroupManager:
                 self.websocket,
                 self.group_id,
                 target_user_id,
-                mute_time,
+                mute_time * 60,
             )
 
         except Exception as e:
