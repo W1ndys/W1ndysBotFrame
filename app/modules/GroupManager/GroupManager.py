@@ -87,10 +87,33 @@ class GroupManager:
     async def handle_unmute(self):
         """
         处理群组解禁
+        两种格式：
+            {command}[CQ:at,qq={user_id}]
+            {command} {user_id}
         """
         try:
             # 实现解禁逻辑
-            pass
+            # 匹配 at 格式
+            at_pattern = r"\[CQ:at,qq=(\d+)\]"
+            at_match = re.search(at_pattern, self.raw_message)
+
+            if at_match:
+                # 使用 at 方式
+                target_user_id = at_match.group(1)
+            else:
+                # 使用 QQ号 方式
+                message_parts = self.raw_message.split()
+                if len(message_parts) >= 2:
+                    # 去掉命令部分，第一个参数应该是QQ号
+                    target_user_id = message_parts[1]
+                    if not target_user_id.isdigit():
+                        raise ValueError("无效的QQ号")
+                else:
+                    raise ValueError("格式错误，请使用 '@用户' 或 'QQ号' 的格式")
+
+            # 执行解禁操作（禁言时间设为0表示解除禁言）
+            await set_group_ban(self.websocket, self.group_id, target_user_id, 0)
+
         except Exception as e:
             await self.send_error_message(f"解禁操作失败: {str(e)}")
             logger.error(f"[{MODULE_NAME}]解禁操作失败: {e}")
