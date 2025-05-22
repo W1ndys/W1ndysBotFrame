@@ -488,11 +488,17 @@ def delete_old_backups(remote_dir: str, days_to_keep: int = 7):
 
 def backup_data_and_logs():
     """备份数据和日志"""
-    # 进入/home/bot/app目录
+    # 获取脚本所在目录
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # 构建app目录的路径 (上一级目录的app子目录)
+    app_dir = os.path.abspath(os.path.join(script_dir, "..", "app"))
+
     try:
-        os.chdir("/home/bot/app")
+        # 进入app目录
+        logger.info(f"尝试进入目录: {app_dir}")
+        os.chdir(app_dir)
     except Exception as e:
-        logger.error(f"/home/bot/app 目录不存在或无法访问: {e}")
+        logger.error(f"目录 {app_dir} 不存在或无法访问: {e}")
         return False
 
     # 检查data和logs目录是否存在
