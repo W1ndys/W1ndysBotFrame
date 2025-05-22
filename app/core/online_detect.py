@@ -7,7 +7,7 @@ from utils.feishu import feishu
 import time
 
 # 全局变量
-is_online = True  # 初始状态为在线
+is_online = None  # 初始状态为None
 last_state_change_time = 0
 last_report_time = 0
 

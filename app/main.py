@@ -1,13 +1,9 @@
 import os
 import asyncio
 from datetime import datetime
-from dotenv import load_dotenv
 from logger import logger
 from bot import connect_to_bot
-from config import *
-
-# 加载.env文件中的环境变量
-load_dotenv()
+from config import OWNER_ID, WS_URL, TOKEN, FEISHU_BOT_URL, FEISHU_BOT_SECRET
 
 
 def verify_config():
