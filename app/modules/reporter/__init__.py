@@ -10,9 +10,6 @@ MODULE_DESCRIPTION = "主要用于把私聊bot、加bot为好友，邀请bot入�
 DATA_DIR = os.path.join("data", MODULE_NAME)
 os.makedirs(DATA_DIR, exist_ok=True)
 
-# 开关文件
-SWITCH_FILE = os.path.join(DATA_DIR, "switch.json")
-
 
 # 模块的一些命令可以在这里定义，方便在其他地方调用，提高代码的复用率
 # ------------------------------------------------------------
