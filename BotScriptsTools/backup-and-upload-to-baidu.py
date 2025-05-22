@@ -1,7 +1,7 @@
 import os
 import tarfile
 import requests
-import json
+from ..app.config import FEISHU_BOT_URL, FEISHU_BOT_SECRET
 import time
 import subprocess
 import datetime
@@ -16,14 +16,6 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
-
-# 飞书webhook地址
-FEISHU_BOT_URL = (
-    "https://open.feishu.cn/open-apis/bot/v2/hook/55648a44-6e84-4d8c-af16-30065ffba8c1"
-)
-
-# 飞书机器人验证关键词
-FEISHU_BOT_SECRET = "zOrUWi4tEpPUafjtJoRkD"
 
 
 def send_feishu_notification(title: str, content: str):
