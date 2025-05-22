@@ -1,6 +1,6 @@
 from . import MODULE_NAME
 import logger
-from core.auth import is_owner
+from core.auth import is_system_owner
 from core.switchs import is_private_switch_on, toggle_private_switch
 from config import OWNER_ID
 from api.message import send_private_msg
@@ -52,7 +52,7 @@ class PrivateMessageHandler:
                 return
 
             # 鉴权
-            if is_owner(self.user_id):
+            if is_system_owner(self.user_id):
 
                 # 处理测试消息
                 if self.raw_message.lower() in ["测试", "test"]:

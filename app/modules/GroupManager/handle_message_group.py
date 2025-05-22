@@ -12,6 +12,8 @@ from core.switchs import is_group_switch_on, toggle_group_switch
 from api.message import send_group_msg
 from api.generate import generate_reply_message, generate_text_message
 from datetime import datetime
+from core.auth import is_group_admin, is_system_owner
+from .GroupManager import GroupManager
 
 
 class GroupMessageHandler:
@@ -57,6 +59,27 @@ class GroupMessageHandler:
             # 如果没开启群聊开关，则不处理
             if not is_group_switch_on(self.group_id, MODULE_NAME):
                 return
+
+            # 如果不是群管理或系统管理，则不处理
+            if not is_group_admin(self.role) and not is_system_owner(self.user_id):
+                return
+
+            # 初始化群组管理器
+            group_manager = GroupManager(self.websocket, self.msg)
+
+            # 处理群消息
+            if self.raw_message.startswith(GROUP_MUTE_COMMAND):
+                await group_manager.handle_mute()
+            elif self.raw_message.startswith(GROUP_UNMUTE_COMMAND):
+                await group_manager.handle_unmute()
+            elif self.raw_message.startswith(GROUP_KICK_COMMAND):
+                await group_manager.handle_kick()
+            elif self.raw_message.startswith(GROUP_ALL_MUTE_COMMAND):
+                await group_manager.handle_all_mute()
+            elif self.raw_message.startswith(GROUP_ALL_UNMUTE_COMMAND):
+                await group_manager.handle_all_unmute()
+            elif self.raw_message.startswith(GROUP_RECALL_COMMAND):
+                await group_manager.handle_recall()
 
         except Exception as e:
             logger.error(f"[{MODULE_NAME}]处理群消息失败: {e}")
