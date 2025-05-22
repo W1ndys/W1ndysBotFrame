@@ -1,4 +1,12 @@
-from . import *
+from . import (
+    MODULE_NAME,
+    GROUP_MUTE_COMMAND,
+    GROUP_UNMUTE_COMMAND,
+    GROUP_KICK_COMMAND,
+    GROUP_ALL_MUTE_COMMAND,
+    GROUP_ALL_UNMUTE_COMMAND,
+    GROUP_RECALL_COMMAND,
+)
 import logger
 from core.switchs import is_group_switch_on, toggle_group_switch
 from api.message import send_group_msg

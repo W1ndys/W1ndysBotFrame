@@ -1,4 +1,4 @@
-from . import *
+from . import MODULE_NAME
 import logger
 from api.generate import generate_text_message
 from api.message import send_private_msg

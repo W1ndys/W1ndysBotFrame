@@ -1,6 +1,7 @@
-from . import *
+from . import MODULE_NAME
 import logger
 from core.switchs import is_group_switch_on
+
 
 class GroupNoticeHandler:
     """

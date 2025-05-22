@@ -1,4 +1,4 @@
-from . import *
+from . import MODULE_NAME
 import logger
 from core.switchs import is_group_switch_on, toggle_group_switch
 from api.message import send_group_msg

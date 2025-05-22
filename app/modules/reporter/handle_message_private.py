@@ -1,4 +1,4 @@
-from . import *
+from . import MODULE_NAME
 import logger
 from core.auth import is_owner
 from core.switchs import is_private_switch_on, toggle_private_switch
