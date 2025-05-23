@@ -39,6 +39,6 @@ echo $! >app.pid
 
 echo "Python程序已启动，新的PID保存在app/app.pid中"
 
-find /home/bot/app/scripts \( -name ".git" -o -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" \) -exec rm -rf {} +
+find ./scripts \( -name ".git" -o -name ".gitignore" -o -name ".gitmodules" -o -name ".gitattributes" \) -exec rm -rf {} +
 
 echo "已删除git相关文件"
