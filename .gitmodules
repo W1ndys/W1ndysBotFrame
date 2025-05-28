@@ -26,10 +26,6 @@
 	path = app/scripts/TimeAwareGreetings
 	url = git@github.com:W1ndysBot/TimeAwareGreetings.git
 	branch = main
-[submodule "app/scripts/MuteWheel"]
-	path = app/scripts/MuteWheel
-	url = git@github.com:W1ndysBot/MuteWheel.git
-	branch = main
 [submodule "app/scripts/QFNUGetFreeClassrooms"]
 	path = app/scripts/QFNUGetFreeClassrooms
 	url = git@github.com:W1ndysBot/QFNUGetFreeClassrooms.git
