@@ -12,24 +12,15 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.core.online_detect import Online_detect_manager
 
 # 统一从各模块导入事件处理器
-from app.scripts.GroupManager.main import handle_events as handle_GroupManager_events
-from app.scripts.ClassTable.main import handle_events as handle_ClassTable_events
-from app.scripts.BlacklistSystem.main import handle_events as handle_Blacklist_events
-from app.scripts.WelcomeFarewell.main import (
-    handle_events as handle_WelcomeFarewell_events,
-)
 
-from app.scripts.SoftBan.main import handle_events as handle_SoftBan_events
+from app.scripts.ClassTable.main import handle_events as handle_ClassTable_events
+
+
 from app.scripts.Custom.main import handle_events as handle_Custom_events
 from app.scripts.TimeAwareGreetings.main import (
     handle_events as handle_TimeAwareGreetings_events,
 )
 
-
-from app.scripts.TitleSelfService.main import (
-    handle_events as handle_TitleSelfService_events,
-)
-from app.scripts.MuteWheel.main import handle_events as handle_MuteWheel_events
 
 from app.scripts.LLM.main import handle_events as handle_LLM_events
 from app.scripts.QFNUEatWhat.main import handle_events as handle_QFNUEatWhat_events
@@ -42,7 +33,6 @@ from app.scripts.GroupEntryVerification.main import (
 from app.scripts.QFNUNoticeMonitor.main import (
     handle_events as handle_QFNUNoticeMonitor_events,
 )
-from app.scripts.AnswerBook.main import handle_events as handle_AnswerBook_events
 from app.scripts.FunnySayings.main import handle_events as handle_FunnySayings_events
 from app.scripts.QFNUElectricityQuery.main import (
     handle_events as handle_QFNUElectricityQuery_events,
@@ -80,16 +70,10 @@ async def handle_message(websocket, message):
         await handle_FunnySayings_events(websocket, msg)
         await handle_HaiXian_events(websocket, msg)
         await handle_QFNUEatWhat_events(websocket, msg)
-        await handle_GroupManager_events(websocket, msg)
         await handle_ClassTable_events(websocket, msg)
-        await handle_Blacklist_events(websocket, msg)
-        await handle_WelcomeFarewell_events(websocket, msg)
-        await handle_SoftBan_events(websocket, msg)
         await handle_TimeAwareGreetings_events(websocket, msg)
-        await handle_TitleSelfService_events(websocket, msg)
-        await handle_MuteWheel_events(websocket, msg)
         await handle_LLM_events(websocket, msg)
         await handle_QFNUNoticeMonitor_events(websocket, msg)
-        await handle_AnswerBook_events(websocket, msg)
+
     except Exception as e:
         logging.error(f"处理ws消息的逻辑错误: {e}")
