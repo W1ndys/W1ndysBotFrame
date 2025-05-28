@@ -77,22 +77,19 @@ fi
 print_step "清理完成"
 echo -e "${GREEN}🎉 子模块 $SUBMODULE_PATH 已被删除${NC}" 
 
-# 询问用户是否要自动提交更改
-read -p "是否要自动提交这些更改? (y/n): " AUTO_COMMIT
+# 默认回车提交更改，按 Ctrl+C 可取消
+print_step "即将自动提交更改，按回车继续，Ctrl+C 可取消..."
+read
 
-if [[ "$AUTO_COMMIT" =~ ^[Yy]$ ]]; then
-    print_step "提交更改"
-    
-    # 生成提交信息
-    COMMIT_MESSAGE="chore(git): 删除子模块 $SUBMODULE_PATH"
-    
-    # 提交更改
-    git add .gitmodules
-    git commit -m "$COMMIT_MESSAGE"
-    
-    echo -e "${GREEN}✅ 更改已提交: $COMMIT_MESSAGE${NC}"
-    git push origin main
-    echo -e "${GREEN}✅ 更改已推送到远程仓库${NC}"
-else
-    echo -e "${YELLOW}ℹ️ 未提交更改，您可以稍后手动提交${NC}"
-fi 
+print_step "提交更改"
+
+# 生成提交信息
+COMMIT_MESSAGE="chore(git): 删除子模块 $SUBMODULE_PATH"
+
+# 提交更改
+git add .gitmodules
+git commit -m "$COMMIT_MESSAGE"
+
+echo -e "${GREEN}✅ 更改已提交: $COMMIT_MESSAGE${NC}"
+git push origin main
+echo -e "${GREEN}✅ 更改已推送到远程仓库${NC}"
