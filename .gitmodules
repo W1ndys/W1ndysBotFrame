@@ -14,10 +14,6 @@
 	path = app/scripts/Example
 	url = git@github.com:W1ndysBot/Example
 	branch = main
-[submodule "app/scripts/SoftBan"]
-	path = app/scripts/SoftBan
-	url = git@github.com:W1ndysBot/SoftBan.git
-	branch = main
 [submodule "app/scripts/Custom"]
 	path = app/scripts/Custom
 	url = git@github.com:W1ndysBot/Custom
