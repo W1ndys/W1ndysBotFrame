@@ -1,7 +1,3 @@
-[submodule "app/scripts/GroupManager"]
-	path = app/scripts/GroupManager
-	url = git@github.com:W1ndysBot/GroupManager.git
-	branch = main
 [submodule "Crypto"]
 	path = app/scripts/Crypto
 	url = git@github.com:W1ndysBot/Crypto.git
