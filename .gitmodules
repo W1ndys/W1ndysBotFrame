@@ -38,10 +38,6 @@
 	path = app/scripts/QFNUNoticeMonitor
 	url = git@github.com:W1ndysBot/QFNUNoticeMonitor.git
 	branch = main
-[submodule "app/scripts/AnswerBook"]
-	path = app/scripts/AnswerBook
-	url = git@github.com:W1ndysBot/AnswerBook.git
-	branch = main
 [submodule "app/scripts/FunnySayings"]
 	path = app/scripts/FunnySayings
 	url = git@github.com:W1ndysBot/FunnySayings.git
