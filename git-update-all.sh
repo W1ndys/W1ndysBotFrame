@@ -20,7 +20,7 @@ echo -e "${BLUE}🔄 正在初始化子模块...${NC}"
 git submodule update --init --recursive
 
 echo -e "${BLUE}🔄 正在更新子模块到 main 分支...${NC}"
-git submodule foreach 'git checkout main && git pull origin main'
+git submodule foreach 'git checkout main && git pull --depth=1 origin main'
 
 echo -e "${BLUE}🔍 检查子模块状态...${NC}"
 # 获取所有子模块路径
@@ -42,7 +42,7 @@ for SUBMODULE in $SUBMODULES; do
     # 如果本地和远程不一致，则有更新
     if [ "$LOCAL" != "$REMOTE" ]; then
         echo -e "${YELLOW}📥 子模块 ${SUBMODULE} 有更新，正在更新...${NC}"
-        git checkout main && git pull origin main
+        git checkout main && git pull --depth=1 origin main
         UPDATED_COUNT=$((UPDATED_COUNT + 1))
     else
         echo -e "${GREEN}✓ 子模块 ${SUBMODULE} 已是最新${NC}"
