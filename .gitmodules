@@ -2,10 +2,6 @@
 	path = app/scripts/Crypto
 	url = git@github.com:W1ndysBot/Crypto.git
 	branch = main
-[submodule "app/scripts/BlacklistSystem"]
-	path = app/scripts/BlacklistSystem
-	url = git@github.com:W1ndysBot/BlacklistSystem
-	branch = main
 [submodule "app/scripts/Example"]
 	path = app/scripts/Example
 	url = git@github.com:W1ndysBot/Example
