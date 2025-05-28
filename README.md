@@ -8,7 +8,7 @@
 
 **🔄 本项目的底层框架正在[W1ndysBotFrame](https://github.com/W1ndysBot/W1ndysBotFrame)重构，目前已完成。**
 
-**本项目正在使用新的底层框架重构，开源在[W1ndysBot-dev](https://github.com/W1ndysBot/W1ndysBot-dev)，重构完成后会合并到本项目。**
+**本项目正在使用新的底层框架重构，开源在[W1ndysBot-dev](https://github.com/W1ndys/W1ndysBot-dev)，重构完成后会合并到本项目。**
 
 ## 流程图
 
