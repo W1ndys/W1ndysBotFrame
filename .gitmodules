@@ -34,10 +34,6 @@
 	path = app/scripts/WelcomeFarewell
 	url = git@github.com:W1ndysBot/WelcomeFarewell.git
 	branch = main
-[submodule "app/scripts/TitleSelfService"]
-	path = app/scripts/TitleSelfService
-	url = git@github.com:W1ndysBot/TitleSelfService.git
-	branch = main
 [submodule "app/scripts/MuteWheel"]
 	path = app/scripts/MuteWheel
 	url = git@github.com:W1ndysBot/MuteWheel.git
