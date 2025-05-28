@@ -30,10 +30,6 @@
 	path = app/scripts/TimeAwareGreetings
 	url = git@github.com:W1ndysBot/TimeAwareGreetings.git
 	branch = main
-[submodule "app/scripts/WelcomeFarewell"]
-	path = app/scripts/WelcomeFarewell
-	url = git@github.com:W1ndysBot/WelcomeFarewell.git
-	branch = main
 [submodule "app/scripts/MuteWheel"]
 	path = app/scripts/MuteWheel
 	url = git@github.com:W1ndysBot/MuteWheel.git
