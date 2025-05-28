@@ -4,10 +4,9 @@ import asyncio
 from bot import connect_to_bot
 import logger
 import datetime
-from logger import setup_logger
+
 from dotenv import load_dotenv
 
-setup_logger()
 
 # 加载环境变量
 load_dotenv()
