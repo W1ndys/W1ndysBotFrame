@@ -27,9 +27,7 @@ from app.scripts.QFNUEatWhat.main import handle_events as handle_QFNUEatWhat_eve
 from app.scripts.QFNUGetFreeClassrooms.main import (
     handle_events as handle_QFNUGetFreeClassrooms_events,
 )
-from app.scripts.GroupEntryVerification.main import (
-    handle_events as handle_GroupEntryVerification_events,
-)
+
 from app.scripts.QFNUNoticeMonitor.main import (
     handle_events as handle_QFNUNoticeMonitor_events,
 )
@@ -62,7 +60,6 @@ async def handle_message(websocket, message):
         # 在线监测模块
         await Online_detect_manager.handle_events(websocket, msg)
 
-        await handle_GroupEntryVerification_events(websocket, msg)
         await handle_GunRouletteGame_events(websocket, msg)
         await handle_Custom_events(websocket, msg)
         await handle_QFNUGetFreeClassrooms_events(websocket, msg)
