@@ -1,0 +1,5 @@
+websockets
+requests
+colorlog
+aiohttp
+python-dotenv
