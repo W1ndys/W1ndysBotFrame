@@ -155,11 +155,12 @@ async def handle_events(websocket, msg):
         current_time = int(time.time())
         # 检查距离上次请求是否已超过指定时间
         if current_time - last_request_time >= REQUEST_INTERVAL:
-            # 直接发送获取所有群的群成员信息请求
+            last_request_time = current_time
+            # 延迟2秒让群列表更新
+            await asyncio.sleep(2)
             group_ids = get_all_group_ids()
             for group_id in group_ids:
                 await get_group_member_list(websocket, group_id)
-            last_request_time = current_time
 
         # 群通知事件
         # 如果有进群退群的通知（系统触发，不受请求间隔限制）
@@ -193,3 +194,81 @@ async def handle_events(websocket, msg):
     except Exception as e:
         logger.error(f"[Core]获取群成员列表失败: {e}")
         await send_private_msg(websocket, OWNER_ID, f"[Core]获取群成员列表失败: {e}")
+
+
+def get_user_role_in_group(group_id, user_id):
+    """
+    根据群号和QQ号获取该用户在群内的身份
+
+    Args:
+        group_id (str或int): 群号
+        user_id (str或int): 用户QQ号
+
+    Returns:
+        str: 用户角色，可能的值：
+             - "owner": 群主
+             - "admin": 管理员
+             - "member": 普通成员
+             - None: 用户不在群内或获取失败
+    """
+    try:
+        # 确保群号和用户ID都是字符串格式
+        group_id = str(group_id)
+        user_id = str(user_id)
+
+        # 构建文件路径
+        file_path = os.path.join(DATA_DIR, f"{group_id}.json")
+
+        # 检查文件是否存在
+        if not os.path.exists(file_path):
+            logger.warning(f"[Core]群成员列表文件不存在: {file_path}")
+            return None
+
+        # 读取群成员列表文件
+        with open(file_path, "r", encoding="utf-8") as f:
+            member_list = json.load(f)
+
+        # 查找指定用户
+        for member in member_list:
+            if str(member.get("user_id")) == user_id:
+                role = member.get("role", "member")
+                logger.info(f"[Core]用户 {user_id} 在群 {group_id} 中的身份为: {role}")
+                return role
+
+        # 用户不在群内
+        logger.warning(f"[Core]用户 {user_id} 不在群 {group_id} 中")
+        return None
+
+    except Exception as e:
+        logger.error(f"[Core]获取用户群内身份失败: {e}")
+        return None
+
+
+def is_user_admin_or_owner(group_id, user_id):
+    """
+    判断用户是否为群主或管理员
+
+    Args:
+        group_id (str或int): 群号
+        user_id (str或int): 用户QQ号
+
+    Returns:
+        bool: True表示是群主或管理员，False表示是普通成员或不在群内
+    """
+    role = get_user_role_in_group(group_id, user_id)
+    return role in ["owner", "admin"]
+
+
+def is_user_owner(group_id, user_id):
+    """
+    判断用户是否为群主
+
+    Args:
+        group_id (str或int): 群号
+        user_id (str或int): 用户QQ号
+
+    Returns:
+        bool: True表示是群主，False表示不是群主
+    """
+    role = get_user_role_in_group(group_id, user_id)
+    return role == "owner"
