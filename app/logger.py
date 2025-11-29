@@ -1,180 +1,153 @@
-import logging
-import colorlog
 import os
+import sys
 import asyncio
-from datetime import datetime, timezone, timedelta
-from api.message import send_private_msg
+from typing import Optional
+from loguru import logger as _logger
+
 from config import OWNER_ID
 
-# 自定义SUCCESS日志级别 (在INFO和WARNING之间)
-SUCCESS = 25  # INFO是20，WARNING是30
-logging.addLevelName(SUCCESS, "SUCCESS")
+# 全局配置缓存，方便动态调整
+_logs_dir: Optional[str] = None
+_console_level: str = "INFO"
+_owner_ws = None
 
 
-# 添加success方法到logging模块
-def _logger_success(self, message, *args, **kwargs):
-    if self.isEnabledFor(SUCCESS):
-        self._log(SUCCESS, message, args, **kwargs)
+def _resolve_logs_dir(logs_dir: Optional[str]) -> str:
+    if logs_dir:
+        return logs_dir
+    # 默认放到当前文件同级的 logs 目录
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(current_dir, "logs")
 
 
-# 将success方法添加到Logger类 - 使用setattr避免类型检查问题
-setattr(logging.Logger, "success", _logger_success)
+def _owner_notify_sink(message):
+    """
+    ERROR 级别私信通知 OWNER（可选）。
+    注意：此 sink 内不要再用 _logger 记录日志，避免递归；出错直接写 stderr。
+    """
+    if not _owner_ws or not OWNER_ID:
+        return
+
+    try:
+        # 取简要文本；你也可以拼接更多字段：message.record["file"], ["line"], ["function"] 等
+        text = message.record["message"]
+        try:
+            from api.message import send_private_msg
+        except Exception as import_err:
+            sys.stderr.write(f"[logger] 无法导入 send_private_msg: {import_err}\n")
+            return
+
+        coro = send_private_msg(_owner_ws, OWNER_ID, f"[ERROR] {text}")
+
+        # 在现有事件循环下调度；无循环则临时跑一次
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                asyncio.create_task(coro)
+            else:
+                loop.run_until_complete(coro)
+        except RuntimeError:
+            # 非主线程或无事件循环
+            asyncio.run(coro)
+    except Exception as e:
+        sys.stderr.write(f"[logger] 发送错误日志到 OWNER_ID 失败: {e}\n")
 
 
-class Logger:
-    def __init__(self, websocket=None, logs_dir="logs", console_level="INFO"):
-        self.websocket = websocket
-        self.root_logger = logging.getLogger()
-        self.console_level = console_level  # 重命名为更明确的含义
+def setup_logging(
+    websocket=None, logs_dir: Optional[str] = None, console_level: str = "INFO"
+):
+    """
+    初始化 loguru：
+    - 控制台彩色输出
+    - 文件输出，按天轮转、30 天保留、gz 压缩
+    - 可选 ERROR 私信通知 sink
+    """
+    global _logs_dir, _console_level, _owner_ws
+    _logs_dir = _resolve_logs_dir(logs_dir)
+    _console_level = console_level
+    _owner_ws = websocket
 
-        # 获取日志目录
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        self.logs_dir = logs_dir or os.path.join(current_dir, "logs")
-        self.log_filename = None
+    os.makedirs(_logs_dir, exist_ok=True)
+    log_path = os.path.join(_logs_dir, "bot_{time:YYYY-MM-DD_HH-mm-ss}.log")
 
-        # 初始化时自动设置
-        self.setup()
+    # 清空旧的 handler，重新配置
+    _logger.remove()
 
-    def setup(self):
-        """设置日志器"""
-        # 清除之前的处理器
-        self.root_logger.handlers = []
+    # 控制台
+    _logger.add(
+        sink=sys.stdout,
+        format="<green>{time:MM-DD HH:mm:ss.SSS}</green> | "
+        "<level>{level: <8}</level> | "
+        "<cyan>{file.name}</cyan>:<cyan>{line}</cyan> | "
+        "<level>{message}</level>",
+        level=_console_level,
+        colorize=True,
+        diagnose=False,
+        backtrace=False,
+    )
 
-        # 创建控制台和文件处理器
-        console_handler, file_handler = self._create_handlers()
+    # 文件
+    _logger.add(
+        sink=log_path,
+        format="{time:YYYY-MM-DD HH:mm:ss.SSS} | "
+        "{level: <8} | "
+        "{process.id}:{thread.id} | "
+        "{file.path}:{function}:{line} | "
+        "{message}",
+        level="DEBUG",
+        encoding="utf-8",
+        rotation="1 day",
+        retention="30 days",
+        compression="gz",
+        diagnose=False,
+        backtrace=False,
+        enqueue=True,  # 文件 IO 放到队列线程，减少阻塞
+    )
 
-        # 设置根日志记录器的级别为DEBUG（最低级别，确保所有日志都能被记录）
-        self.root_logger.setLevel(logging.DEBUG)
-        self.root_logger.addHandler(console_handler)
-        self.root_logger.addHandler(file_handler)
+    # ERROR 私信通知（可选；不想要就注释掉）
+    _logger.add(
+        sink=_owner_notify_sink,
+        level="ERROR",
+        diagnose=False,
+        backtrace=False,
+    )
 
-        # 确保日志及时刷新
-        for handler in self.root_logger.handlers:
-            handler.flush()
+    _logger.info(f"日志初始化完成，目录: {_logs_dir}")
 
-        self.success(f"初始化日志器，日志文件名: {self.log_filename}")
 
-        return self.log_filename
+def set_level(level: str):
+    """动态调整控制台日志级别（会重建 handlers）"""
+    # 复用现有 websocket 与目录
+    setup_logging(websocket=_owner_ws, logs_dir=_logs_dir, console_level=level)
 
-    def _create_handlers(self):
-        """创建控制台和文件处理器"""
-        # 通用配置
-        date_format = "%Y-%m-%d %H:%M:%S"
-        log_colors = {
-            "DEBUG": "cyan",  # 调试信息（青色）
-            "INFO": "white",  # 普通信息（白色）
-            "WARNING": "yellow",  # 警告信息（黄色）
-            "ERROR": "red",  # 错误信息（红色）
-            "CRITICAL": "bold_red",  # 严重错误（加粗红色）
-            "SUCCESS": "green",  # 发送成功（绿色）
-            "NAPCAT": "bold_blue",  # 接收NapCatQQ的消息日志（加粗蓝色）
-        }
 
-        # 创建控制台处理器 - 使用console_level
-        console_handler = colorlog.StreamHandler()
-        console_handler.setFormatter(
-            colorlog.ColoredFormatter(
-                "%(log_color)s%(asctime)s [%(levelname)s]: %(message)s",
-                datefmt=date_format,
-                log_colors=log_colors,
-            )
+# 直接导出 loguru 的 logger，业务方应这样用：
+# from app.logger import logger
+# logger.info("hello")
+logger = _logger
+
+
+class AppLogger:
+    """
+    极薄包装：如果你更喜欢“类”的使用方式，可以这样：
+        log = AppLogger(websocket=ws, logs_dir="logs", console_level="INFO")
+        log.info("xxx")
+    通过 opt(depth=1) 确保调用栈指向业务代码而非此文件。
+    """
+
+    def __init__(
+        self,
+        websocket=None,
+        logs_dir: Optional[str] = None,
+        console_level: str = "INFO",
+    ):
+        setup_logging(
+            websocket=websocket, logs_dir=logs_dir, console_level=console_level
         )
-        console_handler.setLevel(self.console_level)  # 使用实例变量
 
-        # 创建文件处理器
-        # 创建 logs 目录
-        if not os.path.exists(self.logs_dir):
-            os.makedirs(self.logs_dir)
-
-        # 以当前启动时间为文件名，使用东八区时间
-        tz = timezone(timedelta(hours=8))
-        self.log_filename = os.path.join(
-            self.logs_dir, f"{datetime.now(tz).strftime('%Y-%m-%d_%H-%M-%S')}.log"
-        )
-
-        # 使用普通的FileHandler，不进行轮转
-        file_handler = logging.FileHandler(self.log_filename, encoding="utf-8")
-        file_handler.setFormatter(
-            logging.Formatter(
-                "%(asctime)s [%(levelname)s]: %(message)s", datefmt=date_format
-            )
-        )
-        file_handler.setLevel(logging.DEBUG)  # 文件始终记录DEBUG及以上级别
-
-        return console_handler, file_handler
-
-    # 便捷日志方法
-    def debug(self, message):
-        logging.debug(message)
-
-    def info(self, message):
-        logging.info(message)
-
-    def warning(self, message):
-        logging.warning(message)
-
-    def error(self, message):
-        logging.error(message)
-        # 异步发送私聊到OWNER_ID
-        if OWNER_ID and self.websocket:
-            try:
-                # 通过事件循环调度异步任务
-                loop = asyncio.get_event_loop()
-                # 兼容在协程和主线程下的调用
-                if loop.is_running():
-                    asyncio.create_task(
-                        send_private_msg(self.websocket, OWNER_ID, f"[ERROR] {message}")
-                    )
-                else:
-                    loop.run_until_complete(
-                        send_private_msg(self.websocket, OWNER_ID, f"[ERROR] {message}")
-                    )
-            except Exception as e:
-                logging.error(f"发送错误日志到OWNER_ID失败: {e}")
-
-    def critical(self, message):
-        logging.critical(message)
-
-    def success(self, message):
-        logging.log(SUCCESS, message)
-
-    def set_console_level(self, level):
-        """动态设置控制台日志级别"""
-        self.console_level = level
-        # 只更新控制台处理器的级别，文件处理器保持DEBUG
-        for handler in self.root_logger.handlers:
-            if isinstance(handler, colorlog.StreamHandler):
-                handler.setLevel(level)
-
-    def set_level(self, level):
-        """为了向后兼容保留的方法，实际调用set_console_level"""
-        self.set_console_level(level)
-
-
-# 创建一个全局日志器实例
-logger = Logger()
-
-
-# 便捷函数，使调用更简单
-def debug(message):
-    logger.debug(message)
-
-
-def info(message):
-    logger.info(message)
-
-
-def warning(message):
-    logger.warning(message)
-
-
-def error(message):
-    logger.error(message)
-
-
-def critical(message):
-    logger.critical(message)
-
-
-def success(message):
-    logger.success(message)
+    def __getattr__(self, name: str):
+        # 将 debug/info/warning/error/exception/... 动态转发到 loguru，并提升调用栈深度
+        target = getattr(_logger.opt(depth=1), name, None)
+        if callable(target):
+            return target
+        raise AttributeError(f"'AppLogger' object has no attribute '{name}'")

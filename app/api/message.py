@@ -1,6 +1,5 @@
-import asyncio
 import json
-import logger
+from logger import logger
 
 
 # 使用cq码发送群消息
@@ -124,7 +123,8 @@ async def send_group_msg(websocket, group_id, message, note=""):
         await websocket.send(json.dumps(message_data))
         logger.info(f"[API]已执行发送群聊消息到群 {group_id}")
     except Exception as e:
-        logger.error(f"[API]执行发送群聊消息失败: {e}")
+        logger.warning(f"[API]执行发送群聊消息失败: {e}")
+        return
 
 
 async def send_private_msg(websocket, user_id, message, note=""):
@@ -173,7 +173,8 @@ async def send_private_msg(websocket, user_id, message, note=""):
         await websocket.send(json.dumps(message_data))
         logger.info(f"[API]已执行发送私聊消息到用户 {user_id}")
     except Exception as e:
-        logger.error(f"[API]执行发送私聊消息失败: {e}")
+        logger.warning(f"[API]执行发送私聊消息失败: {e}")
+        return
 
 
 async def mark_group_msg_as_read(websocket, group_id):
