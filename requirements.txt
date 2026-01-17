@@ -1,5 +1,5 @@
 aiohappyeyeballs==2.6.1
-aiohttp==3.13.2
+aiohttp==3.13.3
 aiosignal==1.4.0
 attrs==25.4.0
 certifi==2025.11.12
@@ -14,7 +14,7 @@ propcache==0.4.1
 python-dotenv==1.2.1
 requests==2.32.5
 typing-extensions==4.15.0
-urllib3==2.5.0
+urllib3==2.6.3
 websockets==15.0.1
 win32-setctime==1.2.0
 yarl==1.22.0
