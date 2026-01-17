@@ -6,43 +6,95 @@
 ![GitHub license](https://img.shields.io/github/license/W1ndys/W1ndysBotFrame?style=flat-square)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/W1ndys/W1ndysBotFrame)
 
-W1ndysBotFrame，一款基于 NapCat 和 Python 开发的机器人程序。
+W1ndysBotFrame，一款基于 NapCat 和 Python 开发的 QQ 机器人框架。
 
-## 食用/部署（⚙️ 配置说明）
+## 📚 文档
 
-在 `app/.env.example` 中配置系统变量，完成配置后，删除`.example`后缀，`app/config.py`文件会从这里读取环境变量:
+- [开发指南](docs/development.md) - 模块开发详细教程
+- [API 参考](docs/api-reference.md) - 完整的 API 接口文档
 
-配置项说明
+## ⚙️ 快速开始
 
-- `OWNER_ID`: 机器人管理员 QQ 号
-- `WS_URL`: WebSocket 连接地址
-- `TOKEN`: 认证 token(可选)
-- `FEISHU_BOT_URL`: 飞书机器人 URL(可选)
-- `FEISHU_BOT_SECRET`: 飞书机器人 Secret(可选)
+### 环境要求
 
-配置后，运行`app/main.py`
+- Python 3.8+
+- [NapCatQQ](https://github.com/NapNeko/NapCatQQ) 已部署并运行
 
-## ✨ 功能说明
+### 安装步骤
 
-- ❤️ 每次心跳检测机器人是否在线
-- 📢 支持掉线后自动发送通知到飞书
-- 🔌 模块动态加载，无需侵入式修改代码
-- 🔒 每个群可以单独控制功能的开启/关闭
-- 🔐 每个私聊功能可以单独控制功能的开启/关闭
+```bash
+# 1. 克隆项目
+git clone https://github.com/W1ndys/W1ndysBotFrame.git
+cd W1ndysBotFrame
+
+# 2. 安装依赖
+pip install -r requirements.txt
+
+# 3. 配置环境变量
+cp app/.env.example app/.env
+# 编辑 app/.env 文件填写配置
+
+# 4. 运行机器人
+python app/main.py
+```
+
+### 配置说明
+
+编辑 `app/.env` 文件：
+
+| 配置项 | 必填 | 说明 |
+|--------|------|------|
+| `OWNER_ID` | 是 | 机器人管理员 QQ 号 |
+| `WS_URL` | 是 | NapCatQQ WebSocket 连接地址，如 `ws://127.0.0.1:3001` |
+| `TOKEN` | 否 | 连接认证 token（需与 NapCat 配置一致） |
+| `FEISHU_BOT_URL` | 否 | 飞书机器人 Webhook URL（用于掉线通知） |
+| `FEISHU_BOT_SECRET` | 否 | 飞书机器人签名密钥 |
+
+示例配置：
+
+```env
+OWNER_ID=123456789
+WS_URL=ws://127.0.0.1:3001
+TOKEN=your_token
+```
+
+## ✨ 功能特性
+
+- ❤️ 心跳检测机器人在线状态
+- 📢 掉线自动发送飞书通知
+- 🔌 模块动态加载，无需修改核心代码
+- 🔒 群聊/私聊功能开关独立控制
 - ⏰ 支持定时任务
-- 🔄 支持自动撤回自己发送的消息
-- 📨 支持私聊转达到`OWNER`管理员
-- 📝 支持日志记录，自动清理 7 天前的日志(可以在 app/utils/clean_logs.py 中修改)
-- 🧩 提供了示例模块，功能模块可以独立开发和管理
+- 🔄 支持自动撤回消息
+- 📨 私聊消息转达到管理员
+- 📝 日志自动记录与清理
+- 🧩 提供完整的模块开发模板
 
 ## 🛠️ 开发说明
 
-新功能开发请参考 `app/modules/Template` 目录的示例，如需为社区提供功能，请在你自己的仓库中创建一个模块，命名为`W1ndysBotFrame-Module-<功能名>`，以便于框架用户可以快速搜索到你的模块，如需基于本框架完全开发，则可以直接 fork 本项目所有文件基于示例模块开发即可，开源协议为 [GPL-3.0](LICENSE)，请注意遵守开源协议，禁止将本项目用于非法用途，本项目仅用于学习交流。
+详细的开发教程请参阅 [开发指南](docs/development.md)。
 
-- 数据存储请在 `app/data` 下创建对应目录，使用`os.path.join("data", "其他目录", "文件名")` 获取路径
-- 如需定时撤回消息，请在[发送消息 API](https://github.com/W1ndysBot/W1ndysBotFrame/blob/main/app/api/message.py) 的`note`参数中传入`del_msg=秒数`，例如`del_msg=10`
-- 获取 rkey 的实现在`app/core/nc_get_rkey.py`中，框架会每 10 分钟请求一次，获取 rkey 并保存到`app/data/Core/nc_get_rkey.json`中
-- 同步 for 循环操作中，for 循环数量较大时，建议添加异步等待，或分批处理，可以使用`asyncio.sleep(秒数)`来等待以暂时交出控制权，不要使用`time.sleep(秒数)`，否则会导致阻塞，
+### 快速创建模块
+
+1. 在 `app/modules/` 下创建模块目录
+2. 参考 `app/modules/Template` 模板结构
+3. 必须包含 `__init__.py` 和 `main.py`
+4. `main.py` 中需要定义 `async handle_events(websocket, msg)` 函数
+
+### 模块命名规范
+
+如需为社区提供功能模块，请在自己的仓库中创建，命名为 `W1ndysBotFrame-Module-<功能名>`，便于框架用户搜索。
+
+### 开发要点
+
+- **数据存储**：在 `app/data/<模块名>/` 目录下存储数据
+- **自动撤回**：消息 API 的 `note` 参数中添加 `del_msg=秒数`
+- **异步编程**：使用 `asyncio.sleep()` 而非 `time.sleep()`
+- **rkey 获取**：框架每 10 分钟自动刷新，存储在 `app/data/Core/nc_get_rkey.json`
+
+### 开源协议
+
+本项目采用 [GPL-3.0](LICENSE) 协议，请遵守开源协议。仅供学习交流使用，禁止用于非法用途。
 
 ## 更新方法
 
