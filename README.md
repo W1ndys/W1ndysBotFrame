@@ -8,6 +8,12 @@
 
 W1ndysBotFrame，一款基于 NapCat 和 Python 开发的 QQ 机器人框架。
 
+## 停止维护
+
+该项目已停止维护，强烈推荐使用开发者基于Go语言开发的新版插件式开发框架：https://github.com/w1ndys/w1ndys-bot
+
+基于 NapCat（OneBot11）的 Go 语言可插拔 QQ 机器人框架，支持插件热开关、WebUI 可视化管理和 Docker 一键部署。
+
 ## 📚 文档
 
 - [开发指南](docs/development.md) - 模块开发详细教程
